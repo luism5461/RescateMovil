@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 
 package com.rescatemovil.servlet;
 
@@ -29,61 +24,54 @@ public class ClienteServlet extends HttpServlet {
         clienteDAO = new ClienteDAO();
     }
 
-    /**
-     * Procesa las solicitudes GET.
-     */
+    private boolean esAdministrador(
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null) {
+            response.sendRedirect(
+                request.getContextPath() + "/login.jsp");
+            return false;
+        }
+
+        String rol = (String) session.getAttribute("rol");
+
+        if (rol == null || !"admin".equalsIgnoreCase(rol)) {
+            response.sendError(
+                HttpServletResponse.SC_FORBIDDEN,
+                "No tienes permiso para realizar esta operación.");
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+        request.setCharacterEncoding("UTF-8");
 
-        // Verificar que exista una sesión
-        if (session == null) {
-            response.sendRedirect(
-                    request.getContextPath() + "/login.jsp"
-            );
-            return;
-        }
-
-        // Verificar que el usuario tenga rol administrador
-        String rol = (String) session.getAttribute("rol");
-
-        if (rol == null || !"admin".equalsIgnoreCase(rol)) {
-            response.sendRedirect(
-                    request.getContextPath() + "/login.jsp"
-            );
+        if (!esAdministrador(request, response)) {
             return;
         }
 
         String accion = request.getParameter("accion");
 
-        if (accion == null || accion.isEmpty()) {
+        if ("editar".equals(accion)) {
+            mostrarEditar(request, response);
+        } else if ("nuevo".equals(accion)) {
+            request.getRequestDispatcher(
+                "/admin/nuevo-cliente.jsp").forward(request, response);
+        } else {
             listarClientes(request, response);
-            return;
-        }
-
-        switch (accion) {
-
-            case "editar":
-                mostrarEditar(request, response);
-                break;
-
-            case "eliminar":
-                eliminarCliente(request, response);
-                break;
-
-            default:
-                listarClientes(request, response);
-                break;
         }
     }
 
-    /**
-     * Procesa las solicitudes POST.
-     */
     @Override
     protected void doPost(
             HttpServletRequest request,
@@ -92,41 +80,24 @@ public class ClienteServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        HttpSession session = request.getSession(false);
-
-        // Verificar sesión
-        if (session == null) {
-            response.sendRedirect(
-                    request.getContextPath() + "/login.jsp"
-            );
-            return;
-        }
-
-        // Verificar rol administrador
-        String rol = (String) session.getAttribute("rol");
-
-        if (rol == null || !"admin".equalsIgnoreCase(rol)) {
-            response.sendRedirect(
-                    request.getContextPath() + "/login.jsp"
-            );
+        if (!esAdministrador(request, response)) {
             return;
         }
 
         String accion = request.getParameter("accion");
 
-        if ("actualizar".equals(accion)) {
-
+        if ("crear".equals(accion)) {
+            crearCliente(request, response);
+        } else if ("actualizar".equals(accion)) {
             actualizarCliente(request, response);
-
+        } else if ("eliminar".equals(accion)) {
+            eliminarCliente(request, response);
         } else {
-
-            listarClientes(request, response);
+            response.sendRedirect(
+                request.getContextPath() + "/admin/clientes");
         }
     }
 
-    /**
-     * Muestra la lista de clientes.
-     */
     private void listarClientes(
             HttpServletRequest request,
             HttpServletResponse response)
@@ -136,122 +107,142 @@ public class ClienteServlet extends HttpServlet {
 
         request.setAttribute("clientes", clientes);
 
-        request.getRequestDispatcher(
-                "/admin/clientes.jsp"
-        ).forward(request, response);
+        request.getRequestDispatcher("/admin/clientes.jsp")
+                .forward(request, response);
     }
 
-    /**
-     * Busca un cliente y muestra el formulario de edición.
-     */
     private void mostrarEditar(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        String idParametro = request.getParameter("id");
-
-        if (idParametro == null || idParametro.trim().isEmpty()) {
-            response.sendRedirect(
-                    request.getContextPath() + "/admin/clientes"
-            );
-            return;
-        }
+        String parametro = request.getParameter("id");
 
         try {
+            if (parametro == null || parametro.trim().isEmpty()) {
+                response.sendRedirect(
+                    request.getContextPath() + "/admin/clientes");
+                return;
+            }
 
-            int id = Integer.parseInt(idParametro);
+            int id = Integer.parseInt(parametro);
+
+            if (id <= 0) {
+                response.sendRedirect(
+                    request.getContextPath() + "/admin/clientes");
+                return;
+            }
 
             cliente c = clienteDAO.obtenerClientePorId(id);
 
             if (c == null) {
-
                 response.sendRedirect(
-                        request.getContextPath() + "/admin/clientes"
-                );
+                    request.getContextPath()
+                    + "/admin/clientes?error=noencontrado");
                 return;
             }
 
             request.setAttribute("cliente", c);
 
             request.getRequestDispatcher(
-                    "/admin/editar-cliente.jsp"
-            ).forward(request, response);
+                "/admin/editar-cliente.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-
             response.sendRedirect(
-                    request.getContextPath() + "/admin/clientes"
-            );
+                request.getContextPath() + "/admin/clientes?error=id");
         }
     }
 
-    /**
-     * Actualiza un cliente en la base de datos.
-     */
+    private void crearCliente(
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        String nombre = limpiar(request.getParameter("nombre"));
+        String apellido = limpiar(request.getParameter("apellido"));
+        String documento = limpiar(request.getParameter("documento"));
+        String telefono = limpiar(request.getParameter("telefono"));
+        String telefonoSecundario =
+            limpiar(request.getParameter("telefonoSecundario"));
+        String correo = limpiar(request.getParameter("correo"));
+        String direccion = limpiar(request.getParameter("direccion"));
+        String ciudad = limpiar(request.getParameter("ciudad"));
+        String notas = limpiar(request.getParameter("notas"));
+
+        if (nombre.isEmpty() || apellido.isEmpty()
+                || telefono.isEmpty() || correo.isEmpty()
+                || direccion.isEmpty()) {
+            redirigir(request, response, "error=campos");
+            return;
+        }
+
+        if (!correo.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            redirigir(request, response, "error=correo");
+            return;
+        }
+
+        cliente c = new cliente();
+        c.setNombre(nombre);
+        c.setApellido(apellido);
+        c.setDocumento(documento);
+        c.setTelefono(telefono);
+        c.setTelefonoSecundario(telefonoSecundario);
+        c.setCorreo(correo);
+        c.setDireccion(direccion);
+        c.setCiudad(ciudad);
+        c.setNotas(notas);
+
+        boolean registrado = clienteDAO.registrarCliente(c);
+
+        if (registrado) {
+            redirigir(request, response, "mensaje=creado");
+        } else {
+            redirigir(request, response, "error=registrar");
+        }
+    }
+
     private void actualizarCliente(
             HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
+            HttpServletResponse response) throws IOException {
+
+        String parametroId = request.getParameter("id");
 
         try {
-
-            String idParametro = request.getParameter("id");
-
-            if (idParametro == null || idParametro.trim().isEmpty()) {
-
-                response.sendRedirect(
-                        request.getContextPath() + "/admin/clientes"
-                );
+            if (parametroId == null || parametroId.trim().isEmpty()) {
+                redirigir(request, response, "error=id");
                 return;
             }
 
-            int id = Integer.parseInt(idParametro);
+            int id = Integer.parseInt(parametroId);
 
-            String nombre = request.getParameter("nombre");
-            String apellido = request.getParameter("apellido");
-            String documento = request.getParameter("documento");
-            String telefono = request.getParameter("telefono");
+            if (id <= 0) {
+                redirigir(request, response, "error=id");
+                return;
+            }
+
+            String nombre = limpiar(request.getParameter("nombre"));
+            String apellido = limpiar(request.getParameter("apellido"));
+            String documento = limpiar(request.getParameter("documento"));
+            String telefono = limpiar(request.getParameter("telefono"));
             String telefonoSecundario =
-                    request.getParameter("telefonoSecundario");
-            String correo = request.getParameter("correo");
-            String direccion = request.getParameter("direccion");
-            String ciudad = request.getParameter("ciudad");
-            String notas = request.getParameter("notas");
+                limpiar(request.getParameter("telefonoSecundario"));
+            String correo = limpiar(request.getParameter("correo"));
+            String direccion = limpiar(request.getParameter("direccion"));
+            String ciudad = limpiar(request.getParameter("ciudad"));
+            String notas = limpiar(request.getParameter("notas"));
 
-            // Limpiar espacios
-            nombre = limpiar(nombre);
-            apellido = limpiar(apellido);
-            documento = limpiar(documento);
-            telefono = limpiar(telefono);
-            telefonoSecundario = limpiar(telefonoSecundario);
-            correo = limpiar(correo);
-            direccion = limpiar(direccion);
-            ciudad = limpiar(ciudad);
-            notas = limpiar(notas);
-
-            /*
-             * Validación de campos obligatorios.
-             *
-             * Según la estructura de la tabla clientes:
-             * nombre, apellido, telefono, correo y direccion
-             * no pueden quedar vacíos.
-             */
-            if (nombre.isEmpty()
-                    || apellido.isEmpty()
-                    || telefono.isEmpty()
-                    || correo.isEmpty()
+            if (nombre.isEmpty() || apellido.isEmpty()
+                    || telefono.isEmpty() || correo.isEmpty()
                     || direccion.isEmpty()) {
+                redirigir(request, response, "error=campos");
+                return;
+            }
 
-                response.sendRedirect(
-                        request.getContextPath()
-                        + "/admin/clientes?error=campos"
-                );
+            if (!correo.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+                redirigir(request, response, "error=correo");
                 return;
             }
 
             cliente c = new cliente();
-
             c.setId(id);
             c.setNombre(nombre);
             c.setApellido(apellido);
@@ -263,58 +254,59 @@ public class ClienteServlet extends HttpServlet {
             c.setCiudad(ciudad);
             c.setNotas(notas);
 
-            boolean actualizado =
-                    clienteDAO.actualizarCliente(c);
-
-            if (actualizado) {
-
-                response.sendRedirect(
-                        request.getContextPath()
-                        + "/admin/clientes?mensaje=actualizado"
-                );
-
+            if (clienteDAO.actualizarCliente(c)) {
+                redirigir(request, response, "mensaje=actualizado");
             } else {
-
-                response.sendRedirect(
-                        request.getContextPath()
-                        + "/admin/clientes?error=actualizar"
-                );
+                redirigir(request, response, "error=actualizar");
             }
 
         } catch (NumberFormatException e) {
-
-            response.sendRedirect(
-                    request.getContextPath()
-                    + "/admin/clientes?error=id"
-            );
+            redirigir(request, response, "error=id");
         }
     }
 
-    /**
-     * Elimina un cliente.
-     *
-     * Por ahora esta función solamente redirige.
-     * La eliminación real la implementaremos posteriormente.
-     */
     private void eliminarCliente(
             HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
+            HttpServletResponse response) throws IOException {
 
-        response.sendRedirect(
-                request.getContextPath() + "/admin/clientes"
-        );
+        String parametroId = request.getParameter("id");
+
+        try {
+            if (parametroId == null || parametroId.trim().isEmpty()) {
+                redirigir(request, response, "error=id");
+                return;
+            }
+
+            int id = Integer.parseInt(parametroId);
+
+            if (id <= 0) {
+                redirigir(request, response, "error=id");
+                return;
+            }
+
+            boolean eliminado = clienteDAO.eliminarCliente(id);
+
+            if (eliminado) {
+                redirigir(request, response, "mensaje=eliminado");
+            } else {
+                redirigir(request, response, "error=eliminar");
+            }
+
+        } catch (NumberFormatException e) {
+            redirigir(request, response, "error=id");
+        }
     }
 
-    /**
-     * Limpia un texto recibido desde el formulario.
-     */
+    private void redirigir(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String parametro) throws IOException {
+
+        response.sendRedirect(
+            request.getContextPath() + "/admin/clientes?" + parametro);
+    }
+
     private String limpiar(String valor) {
-
-        if (valor == null) {
-            return "";
-        }
-
-        return valor.trim();
+        return valor == null ? "" : valor.trim();
     }
 }

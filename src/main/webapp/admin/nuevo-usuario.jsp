@@ -20,17 +20,12 @@
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Nuevo usuario | Rescate Móvil</title>
 
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -40,16 +35,12 @@
         body {
             font-family: "Segoe UI", Arial, sans-serif;
             background:
-                radial-gradient(circle at top right, rgba(230,57,70,0.16), transparent 30%),
-                radial-gradient(circle at bottom left, rgba(255,183,3,0.08), transparent 30%),
+                radial-gradient(circle at top right, rgba(230,57,70,.16), transparent 30%),
+                radial-gradient(circle at bottom left, rgba(255,183,3,.08), transparent 30%),
                 #080b12;
-            color: #ffffff;
+            color: #fff;
             min-height: 100vh;
         }
-
-        /* =========================
-           SIDEBAR
-           ========================= */
 
         .sidebar {
             position: fixed;
@@ -57,10 +48,11 @@
             top: 0;
             width: 260px;
             height: 100vh;
-            background: rgba(13,17,27,0.97);
-            border-right: 1px solid rgba(255,255,255,0.08);
+            background: rgba(13,17,27,.97);
+            border-right: 1px solid rgba(255,255,255,.08);
             padding: 25px 18px;
             z-index: 100;
+            overflow-y: auto;
         }
 
         .logo-area {
@@ -68,7 +60,7 @@
             align-items: center;
             gap: 12px;
             padding: 5px 10px 28px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,.08);
             margin-bottom: 22px;
         }
 
@@ -81,7 +73,6 @@
 
         .logo-text h2 {
             font-size: 18px;
-            font-weight: 700;
         }
 
         .logo-text span {
@@ -113,23 +104,19 @@
             padding: 13px 14px;
             border-radius: 10px;
             font-size: 14px;
-            transition: 0.25s;
+            transition: .25s;
         }
 
         .menu a:hover {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255,255,255,.06);
             color: white;
             transform: translateX(3px);
         }
 
         .menu a.active {
-            background: linear-gradient(
-                135deg,
-                rgba(230,57,70,0.20),
-                rgba(230,57,70,0.08)
-            );
-            color: #ffffff;
-            border: 1px solid rgba(230,57,70,0.25);
+            background: linear-gradient(135deg, rgba(230,57,70,.20), rgba(230,57,70,.08));
+            color: white;
+            border: 1px solid rgba(230,57,70,.25);
         }
 
         .menu-icon {
@@ -144,8 +131,8 @@
             left: 18px;
             right: 18px;
             padding: 14px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.07);
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.07);
             border-radius: 12px;
         }
 
@@ -183,20 +170,16 @@
             text-align: center;
             text-decoration: none;
             color: #ff7b86;
-            border: 1px solid rgba(230,57,70,0.2);
+            border: 1px solid rgba(230,57,70,.2);
             padding: 8px;
             border-radius: 8px;
             font-size: 12px;
-            transition: 0.2s;
+            transition: .2s;
         }
 
         .logout:hover {
-            background: rgba(230,57,70,0.12);
+            background: rgba(230,57,70,.12);
         }
-
-        /* =========================
-           CONTENIDO
-           ========================= */
 
         .main {
             margin-left: 260px;
@@ -208,6 +191,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 20px;
             margin-bottom: 30px;
         }
 
@@ -234,21 +218,18 @@
         .back-button {
             text-decoration: none;
             color: #c5cbd5;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,.1);
             padding: 11px 18px;
             border-radius: 10px;
             font-size: 13px;
-            transition: 0.25s;
+            white-space: nowrap;
+            transition: .25s;
         }
 
         .back-button:hover {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255,255,255,.06);
             color: white;
         }
-
-        /* =========================
-           FORMULARIO
-           ========================= */
 
         .form-container {
             max-width: 950px;
@@ -256,11 +237,11 @@
         }
 
         .form-card {
-            background: rgba(17,22,34,0.90);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(17,22,34,.90);
+            border: 1px solid rgba(255,255,255,.08);
             border-radius: 18px;
             padding: 32px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            box-shadow: 0 25px 60px rgba(0,0,0,.35);
         }
 
         .form-header {
@@ -269,19 +250,16 @@
             gap: 18px;
             padding-bottom: 25px;
             margin-bottom: 28px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,.08);
         }
 
         .form-icon {
             width: 58px;
             height: 58px;
+            flex-shrink: 0;
             border-radius: 15px;
-            background: linear-gradient(
-                135deg,
-                rgba(230,57,70,0.22),
-                rgba(255,136,0,0.12)
-            );
-            border: 1px solid rgba(230,57,70,0.25);
+            background: linear-gradient(135deg, rgba(230,57,70,.22), rgba(255,136,0,.12));
+            border: 1px solid rgba(230,57,70,.25);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -300,7 +278,7 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 22px;
         }
 
@@ -308,6 +286,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            min-width: 0;
         }
 
         .field.full {
@@ -330,12 +309,12 @@
             height: 48px;
             padding: 0 15px;
             border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,.10);
             background: #0c111c;
-            color: #ffffff;
+            color: #fff;
             outline: none;
             font-size: 13px;
-            transition: 0.25s;
+            transition: .25s;
         }
 
         .field input::placeholder {
@@ -345,7 +324,11 @@
         .field input:focus,
         .field select:focus {
             border-color: #e63946;
-            box-shadow: 0 0 0 3px rgba(230,57,70,0.10);
+            box-shadow: 0 0 0 3px rgba(230,57,70,.10);
+        }
+
+        .field input:invalid:not(:placeholder-shown) {
+            border-color: rgba(230,57,70,.65);
         }
 
         .field select option {
@@ -371,27 +354,21 @@
         }
 
         .help {
-            color: #657084;
+            color: #8f98aa;
             font-size: 11px;
+            line-height: 1.5;
         }
-
-        /* =========================
-           ERROR
-           ========================= */
 
         .alert {
             margin-bottom: 22px;
             padding: 14px 16px;
             border-radius: 10px;
             font-size: 13px;
-            border: 1px solid rgba(230,57,70,0.25);
-            background: rgba(230,57,70,0.10);
-            color: #ff9ca4;
+            line-height: 1.6;
+            border: 1px solid rgba(230,57,70,.25);
+            background: rgba(230,57,70,.10);
+            color: #ffb2b8;
         }
-
-        /* =========================
-           FOOTER DEL FORMULARIO
-           ========================= */
 
         .form-actions {
             display: flex;
@@ -399,7 +376,7 @@
             gap: 12px;
             margin-top: 32px;
             padding-top: 25px;
-            border-top: 1px solid rgba(255,255,255,0.08);
+            border-top: 1px solid rgba(255,255,255,.08);
         }
 
         .btn {
@@ -410,37 +387,32 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.25s;
+            transition: .25s;
         }
 
         .btn-cancel {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,.05);
             color: #aeb6c4;
-            border: 1px solid rgba(255,255,255,0.09);
+            border: 1px solid rgba(255,255,255,.09);
         }
 
         .btn-cancel:hover {
-            background: rgba(255,255,255,0.09);
+            background: rgba(255,255,255,.09);
             color: white;
         }
 
         .btn-save {
             background: linear-gradient(135deg, #e63946, #d62839);
             color: white;
-            box-shadow: 0 8px 25px rgba(230,57,70,0.25);
+            box-shadow: 0 8px 25px rgba(230,57,70,.25);
         }
 
         .btn-save:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(230,57,70,0.35);
+            box-shadow: 0 12px 30px rgba(230,57,70,.35);
         }
 
-        /* =========================
-           RESPONSIVE
-           ========================= */
-
-        @media (max-width: 900px) {
-
+        @media (max-width: 1000px) {
             .sidebar {
                 width: 220px;
             }
@@ -448,6 +420,13 @@
             .main {
                 margin-left: 220px;
                 padding: 25px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .top-bar {
+                align-items: flex-start;
+                flex-direction: column;
             }
 
             .form-grid {
@@ -460,11 +439,11 @@
         }
 
         @media (max-width: 700px) {
-
             .sidebar {
                 position: relative;
                 width: 100%;
                 height: auto;
+                overflow: visible;
             }
 
             .user-box {
@@ -480,12 +459,6 @@
                 padding: 22px;
             }
 
-            .top-bar {
-                align-items: flex-start;
-                flex-direction: column;
-                gap: 18px;
-            }
-
             .form-card {
                 padding: 22px;
             }
@@ -498,414 +471,302 @@
                 width: 100%;
                 text-align: center;
             }
+
+            .title-area h1 {
+                font-size: 26px;
+            }
         }
-
     </style>
-
 </head>
 
 <body>
 
-    <!-- =========================
-         BARRA LATERAL
-         ========================= -->
+<aside class="sidebar">
+    <div class="logo-area">
+        <img
+            src="<%= request.getContextPath() %>/img/logo.jpg"
+            alt="Logo Rescate Móvil">
 
-    <aside class="sidebar">
+        <div class="logo-text">
+            <h2>Rescate Móvil</h2>
+            <span>Panel administrativo</span>
+        </div>
+    </div>
 
-        <div class="logo-area">
+    <div class="menu-title">Menú principal</div>
 
-            <img
-                src="<%= request.getContextPath() %>/img/logo.jpg"
-                alt="Logo Rescate Móvil">
+    <nav class="menu">
+        <a href="<%= request.getContextPath() %>/admin/index.jsp">
+            <span class="menu-icon">⌂</span> Inicio
+        </a>
 
-            <div class="logo-text">
-                <h2>Rescate Móvil</h2>
-                <span>Panel administrativo</span>
+        <a class="active" href="<%= request.getContextPath() %>/admin/usuarios">
+            <span class="menu-icon">👥</span> Gestión de usuarios
+        </a>
+
+        <a href="<%= request.getContextPath() %>/admin/clientes.jsp">
+            <span class="menu-icon">👤</span> Clientes
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">🔧</span> Técnicos
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">📦</span> Productos
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">🛠️</span> Reparaciones
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">💰</span> Ventas
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">🔔</span> Notificaciones
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">📊</span> Reportes
+        </a>
+    </nav>
+
+    <div class="user-box">
+        <div class="user-info">
+            <div class="avatar">
+                <%= usuarioSesion.substring(0, 1).toUpperCase() %>
             </div>
 
+            <div>
+                <div class="user-name"><%= usuarioSesion %></div>
+                <div class="user-role">Administrador</div>
+            </div>
         </div>
 
-        <div class="menu-title">
-            Menú principal
+        <a class="logout"
+           href="<%= request.getContextPath() %>/login.jsp?mensaje=logout">
+            Cerrar sesión
+        </a>
+    </div>
+</aside>
+
+<main class="main">
+
+    <div class="top-bar">
+        <div class="title-area">
+            <div class="breadcrumb">
+                Panel de administrador
+                <span>/</span> Gestión de usuarios
+                <span>/</span> Nuevo usuario
+            </div>
+
+            <h1>Crear nuevo usuario</h1>
+
+            <p>Registra un nuevo usuario para acceder al sistema.</p>
         </div>
 
-        <nav class="menu">
+        <a class="back-button"
+           href="<%= request.getContextPath() %>/admin/usuarios">
+            ← Volver a usuarios
+        </a>
+    </div>
 
-            <a href="<%= request.getContextPath() %>/admin/index.jsp">
-                <span class="menu-icon">⌂</span>
-                Inicio
-            </a>
+    <div class="form-container">
+        <div class="form-card">
 
-            <a class="active"
-               href="<%= request.getContextPath() %>/admin/usuarios">
-
-                <span class="menu-icon">👥</span>
-                Gestión de usuarios
-
-            </a>
-
-            <a href="#">
-                <span class="menu-icon">👤</span>
-                Clientes
-            </a>
-
-            <a href="#">
-                <span class="menu-icon">🔧</span>
-                Técnicos
-            </a>
-
-            <a href="#">
-                <span class="menu-icon">📦</span>
-                Productos
-            </a>
-
-            <a href="#">
-                <span class="menu-icon">🛠️</span>
-                Reparaciones
-            </a>
-
-            <a href="#">
-                <span class="menu-icon">💰</span>
-                Ventas
-            </a>
-
-            <a href="#">
-                <span class="menu-icon">🔔</span>
-                Notificaciones
-            </a>
-
-            <a href="#">
-                <span class="menu-icon">📊</span>
-                Reportes
-            </a>
-
-        </nav>
-
-        <div class="user-box">
-
-            <div class="user-info">
-
-                <div class="avatar">
-                    <%= usuarioSesion.substring(0, 1).toUpperCase() %>
-                </div>
+            <div class="form-header">
+                <div class="form-icon">👤+</div>
 
                 <div>
-                    <div class="user-name">
-                        <%= usuarioSesion %>
-                    </div>
-
-                    <div class="user-role">
-                        Administrador
-                    </div>
+                    <h2>Información del usuario</h2>
+                    <p>Completa los datos necesarios para registrar el nuevo usuario.</p>
                 </div>
-
             </div>
 
-            <a class="logout"
-               href="<%= request.getContextPath() %>/login.jsp?mensaje=logout">
-                Cerrar sesión
-            </a>
+            <% if ("datos".equals(error)) { %>
+                <div class="alert" role="alert">
+                    ⚠️ Completa todos los campos obligatorios.
+                </div>
+            <% } else if ("usuario".equals(error)) { %>
+                <div class="alert" role="alert">
+                    ⚠️ Ese nombre de usuario ya está registrado.
+                    Elige otro nombre de usuario.
+                </div>
+            <% } else if ("correo".equals(error)) { %>
+                <div class="alert" role="alert">
+                    ⚠️ Ese correo electrónico ya está registrado.
+                    Utiliza otra dirección de correo.
+                </div>
+            <% } else if ("formatoCorreo".equals(error)) { %>
+                <div class="alert" role="alert">
+                    ⚠️ El correo electrónico no tiene un formato válido.
+                    Ejemplo: usuario@ejemplo.com.
+                </div>
+            <% } else if ("password".equals(error)) { %>
+                <div class="alert" role="alert">
+                    ⚠️ La contraseña debe tener al menos 8 caracteres.
+                </div>
+            <% } else if ("rol".equals(error)) { %>
+                <div class="alert" role="alert">
+                    ⚠️ Selecciona un rol válido.
+                </div>
+            <% } else if ("registro".equals(error)) { %>
+                <div class="alert" role="alert">
+                    ⚠️ No fue posible registrar el usuario.
+                    Comprueba los datos e inténtalo nuevamente.
+                </div>
+            <% } %>
 
-        </div>
+            <form
+                action="<%= request.getContextPath() %>/admin/usuarios"
+                method="post">
 
-    </aside>
+                <div class="form-grid">
 
+                    <div class="field full">
+                        <label for="nombre">
+                            Nombre completo <span class="required">*</span>
+                        </label>
 
-    <!-- =========================
-         CONTENIDO PRINCIPAL
-         ========================= -->
+                        <div class="input-icon">
+                            <input
+                                type="text"
+                                id="nombre"
+                                name="nombre"
+                                placeholder="Ej. Carlos Pérez"
+                                minlength="2"
+                                maxlength="100"
+                                autocomplete="name"
+                                required>
+                            <span>👤</span>
+                        </div>
+                    </div>
 
-    <main class="main">
+                    <div class="field">
+                        <label for="usuario">
+                            Nombre de usuario <span class="required">*</span>
+                        </label>
 
-        <div class="top-bar">
+                        <div class="input-icon">
+                            <input
+                                type="text"
+                                id="usuario"
+                                name="usuario"
+                                placeholder="Ej. carlos.perez"
+                                minlength="3"
+                                maxlength="50"
+                                pattern="[A-Za-z0-9._-]+"
+                                title="Usa letras, números, puntos, guiones o guiones bajos."
+                                autocomplete="username"
+                                required>
+                            <span>@</span>
+                        </div>
 
-            <div class="title-area">
+                        <span class="help">
+                            Mínimo 3 caracteres. Puedes usar letras, números, puntos,
+                            guiones y guiones bajos.
+                        </span>
+                    </div>
 
-                <div class="breadcrumb">
-                    Panel de administrador
-                    <span> / </span>
-                    Gestión de usuarios
-                    <span> / </span>
-                    Nuevo usuario
+                    <div class="field">
+                        <label for="correo">
+                            Correo electrónico <span class="required">*</span>
+                        </label>
+
+                        <div class="input-icon">
+                            <input
+                                type="email"
+                                id="correo"
+                                name="correo"
+                                placeholder="correo@ejemplo.com"
+                                maxlength="150"
+                                autocomplete="email"
+                                required>
+                            <span>✉</span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="telefono">Teléfono</label>
+
+                        <div class="input-icon">
+                            <input
+                                type="tel"
+                                id="telefono"
+                                name="telefono"
+                                placeholder="Ej. 3001234567"
+                                maxlength="20"
+                                pattern="[0-9+() -]{7,20}"
+                                title="Introduce un teléfono válido."
+                                autocomplete="tel">
+                            <span>☎</span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">
+                            Contraseña <span class="required">*</span>
+                        </label>
+
+                        <div class="input-icon">
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Ingresa una contraseña"
+                                minlength="8"
+                                maxlength="100"
+                                autocomplete="new-password"
+                                required>
+                            <span>🔒</span>
+                        </div>
+
+                        <span class="help">
+                            La contraseña debe tener al menos 8 caracteres.
+                        </span>
+                    </div>
+
+                    <div class="field">
+                        <label for="rol">
+                            Rol del usuario <span class="required">*</span>
+                        </label>
+
+                        <select id="rol" name="rol" required>
+                            <option value="">Selecciona un rol</option>
+                            <option value="admin">Administrador</option>
+                            <option value="tecnico">Técnico</option>
+                            <option value="cliente">Cliente</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="activo">Estado de la cuenta</label>
+
+                        <select id="activo" name="activo">
+                            <option value="1" selected>Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+
                 </div>
 
-                <h1>Crear nuevo usuario</h1>
+                <div class="form-actions">
+                    <a
+                        class="btn btn-cancel"
+                        href="<%= request.getContextPath() %>/admin/usuarios">
+                        Cancelar
+                    </a>
 
-                <p>
-                    Registra un nuevo usuario para acceder al sistema.
-                </p>
-
-            </div>
-
-            <a class="back-button"
-               href="<%= request.getContextPath() %>/admin/usuarios">
-
-                ← Volver a usuarios
-
-            </a>
-
-        </div>
-
-
-        <div class="form-container">
-
-            <div class="form-card">
-
-                <div class="form-header">
-
-                    <div class="form-icon">
-                        👤+
-                    </div>
-
-                    <div>
-                        <h2>Información del usuario</h2>
-
-                        <p>
-                            Completa los datos necesarios para registrar
-                            el nuevo usuario.
-                        </p>
-                    </div>
-
+                    <button type="submit" class="btn btn-save">
+                        ✓ Crear usuario
+                    </button>
                 </div>
-
-
-                <% if ("datos".equals(error)) { %>
-
-                    <div class="alert">
-                        ⚠️ Por favor completa todos los campos obligatorios.
-                    </div>
-
-                <% } else if ("registro".equals(error)) { %>
-
-                    <div class="alert">
-                        ⚠️ No fue posible registrar el usuario.
-                        Verifica que el nombre de usuario o correo
-                        no estén duplicados.
-                    </div>
-
-                <% } %>
-
-
-                <form
-                    class="formulario"
-                    action="<%= request.getContextPath() %>/admin/usuarios"
-                    method="post">
-
-
-                    <div class="form-grid">
-
-
-                        <!-- NOMBRE -->
-
-                        <div class="field full">
-
-                            <label for="nombre">
-                                Nombre completo
-                                <span class="required">*</span>
-                            </label>
-
-                            <div class="input-icon">
-
-                                <input
-                                    type="text"
-                                    id="nombre"
-                                    name="nombre"
-                                    placeholder="Ej. Carlos Pérez"
-                                    required>
-
-                                <span>👤</span>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- USUARIO -->
-
-                        <div class="field">
-
-                            <label for="usuario">
-                                Nombre de usuario
-                                <span class="required">*</span>
-                            </label>
-
-                            <div class="input-icon">
-
-                                <input
-                                    type="text"
-                                    id="usuario"
-                                    name="usuario"
-                                    placeholder="Ej. carlos.perez"
-                                    required>
-
-                                <span>@</span>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- CORREO -->
-
-                        <div class="field">
-
-                            <label for="correo">
-                                Correo electrónico
-                                <span class="required">*</span>
-                            </label>
-
-                            <div class="input-icon">
-
-                                <input
-                                    type="email"
-                                    id="correo"
-                                    name="correo"
-                                    placeholder="correo@ejemplo.com"
-                                    required>
-
-                                <span>✉</span>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- TELEFONO -->
-
-                        <div class="field">
-
-                            <label for="telefono">
-                                Teléfono
-                            </label>
-
-                            <div class="input-icon">
-
-                                <input
-                                    type="tel"
-                                    id="telefono"
-                                    name="telefono"
-                                    placeholder="Ej. 3001234567">
-
-                                <span>☎</span>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- CONTRASEÑA -->
-
-                        <div class="field">
-
-                            <label for="password">
-                                Contraseña
-                                <span class="required">*</span>
-                            </label>
-
-                            <div class="input-icon">
-
-                                <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    placeholder="Ingresa una contraseña"
-                                    required>
-
-                                <span>🔒</span>
-
-                            </div>
-
-                            <span class="help">
-                                Utiliza una contraseña segura.
-                            </span>
-
-                        </div>
-
-
-                        <!-- ROL -->
-
-                        <div class="field">
-
-                            <label for="rol">
-                                Rol del usuario
-                                <span class="required">*</span>
-                            </label>
-
-                            <select id="rol" name="rol" required>
-
-                                <option value="">
-                                    Selecciona un rol
-                                </option>
-
-                                <option value="admin">
-                                    Administrador
-                                </option>
-
-                                <option value="tecnico">
-                                    Técnico
-                                </option>
-
-                                <option value="cliente">
-                                    Cliente
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <!-- ESTADO -->
-
-                        <div class="field">
-
-                            <label for="activo">
-                                Estado de la cuenta
-                            </label>
-
-                            <select id="activo" name="activo">
-
-                                <option value="1" selected>
-                                    Activo
-                                </option>
-
-                                <option value="0">
-                                    Inactivo
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- BOTONES -->
-
-                    <div class="form-actions">
-
-                        <a
-                            class="btn btn-cancel"
-                            href="<%= request.getContextPath() %>/admin/usuarios">
-                            Cancelar
-                        </a>
-
-                        <button
-                            type="submit"
-                            class="btn btn-save">
-                            ✓ Crear usuario
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
+            </form>
         </div>
-
-    </main>
+    </div>
+</main>
 
 </body>
-
 </html>

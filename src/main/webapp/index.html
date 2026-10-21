@@ -8,7 +8,7 @@
     <title>Rescate Móvil | Servicio Técnico de Celulares</title>
 
     <meta name="description"
-          content="Rescate Móvil - Servicio técnico profesional para celulares. Reparación, mantenimiento y soluciones para dispositivos móviles.">
+          content="Rescate Móvil: servicio técnico profesional para celulares, reparación, mantenimiento y gestión de dispositivos móviles.">
 
     <style>
         * {
@@ -28,41 +28,33 @@
             overflow-x: hidden;
         }
 
-        /* =========================
-           FONDO
-        ========================= */
-
-        body::before {
-            content: "";
-            position: fixed;
-            width: 500px;
-            height: 500px;
-            background: #00d4ff;
-            opacity: 0.08;
-            border-radius: 50%;
-            filter: blur(100px);
-            top: -150px;
-            left: -150px;
-            z-index: -1;
-        }
-
+        body::before,
         body::after {
             content: "";
             position: fixed;
             width: 500px;
             height: 500px;
-            background: #0066ff;
-            opacity: 0.08;
             border-radius: 50%;
             filter: blur(100px);
-            bottom: -150px;
-            right: -150px;
             z-index: -1;
+            pointer-events: none;
         }
 
-        /* =========================
-           NAVBAR
-        ========================= */
+        body::before {
+            background: #00d4ff;
+            opacity: 0.08;
+            top: -150px;
+            left: -150px;
+        }
+
+        body::after {
+            background: #0066ff;
+            opacity: 0.08;
+            bottom: -150px;
+            right: -150px;
+        }
+
+        /* LOGO Y NAVEGACIÓN */
 
         .navbar {
             width: 100%;
@@ -74,12 +66,15 @@
             top: 0;
             left: 0;
             z-index: 100;
+            background: rgba(7, 17, 31, 0.75);
+            backdrop-filter: blur(12px);
         }
 
         .logo-container {
             display: flex;
             align-items: center;
             gap: 12px;
+            min-width: 0;
         }
 
         .logo-container img {
@@ -87,12 +82,16 @@
             height: 55px;
             object-fit: contain;
             border-radius: 12px;
+            background: #ffffff;
+            padding: 3px;
+            flex-shrink: 0;
         }
 
         .logo-text {
             font-size: 22px;
             font-weight: bold;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         .logo-text span {
@@ -129,9 +128,7 @@
             color: #07111f !important;
         }
 
-        /* =========================
-           HERO
-        ========================= */
+        /* PORTADA PRINCIPAL */
 
         .hero {
             min-height: 100vh;
@@ -184,15 +181,19 @@
             flex-wrap: wrap;
         }
 
-        .btn-primary {
+        .btn-primary,
+        .btn-secondary {
             display: inline-block;
             padding: 15px 28px;
-            background: #00d4ff;
-            color: #07111f;
             text-decoration: none;
             border-radius: 30px;
             font-weight: bold;
             transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: #00d4ff;
+            color: #07111f;
         }
 
         .btn-primary:hover {
@@ -201,14 +202,8 @@
         }
 
         .btn-secondary {
-            display: inline-block;
-            padding: 15px 28px;
             border: 1px solid #38516d;
             color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: bold;
-            transition: 0.3s;
         }
 
         .btn-secondary:hover {
@@ -216,16 +211,14 @@
             color: #00d4ff;
         }
 
-        /* =========================
-           TELEFONO
-        ========================= */
+        /* TELÉFONO */
 
         .phone-area {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-width: 330px;
+            min-width: 300px;
         }
 
         .phone {
@@ -259,9 +252,11 @@
             height: 100%;
             border-radius: 30px;
             background:
-                radial-gradient(circle at top right,
-                rgba(0, 212, 255, 0.18),
-                transparent 35%),
+                radial-gradient(
+                    circle at top right,
+                    rgba(0, 212, 255, 0.18),
+                    transparent 35%
+                ),
                 #0b1726;
             display: flex;
             flex-direction: column;
@@ -276,6 +271,8 @@
             height: 115px;
             object-fit: contain;
             border-radius: 22px;
+            background: white;
+            padding: 5px;
             margin-bottom: 20px;
         }
 
@@ -300,9 +297,7 @@
             border-radius: 0 4px 4px 0;
         }
 
-        /* =========================
-           SERVICIOS
-        ========================= */
+        /* SERVICIOS */
 
         .services {
             padding: 100px 8%;
@@ -329,6 +324,7 @@
         .section-title p {
             color: #91a4b9;
             margin-top: 15px;
+            line-height: 1.7;
         }
 
         .cards {
@@ -375,9 +371,7 @@
             font-size: 14px;
         }
 
-        /* =========================
-           NOSOTROS
-        ========================= */
+        /* NOSOTROS */
 
         .about {
             padding: 100px 8%;
@@ -394,6 +388,7 @@
 
         .about h2 {
             font-size: 40px;
+            line-height: 1.2;
             margin-bottom: 20px;
         }
 
@@ -429,16 +424,16 @@
         .feature span {
             color: #91a4b9;
             font-size: 13px;
+            line-height: 1.5;
         }
 
         .about-box {
             min-height: 350px;
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(0, 212, 255, 0.12),
-                    rgba(0, 102, 255, 0.04)
-                );
+            background: linear-gradient(
+                145deg,
+                rgba(0, 212, 255, 0.12),
+                rgba(0, 102, 255, 0.04)
+            );
             border: 1px solid #1b3047;
             border-radius: 25px;
             display: flex;
@@ -448,9 +443,15 @@
             padding: 40px;
         }
 
-        .about-box-icon {
-            font-size: 80px;
+        .about-box-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            background: white;
+            border-radius: 25px;
+            padding: 7px;
             margin-bottom: 20px;
+            box-shadow: 0 10px 35px rgba(0, 212, 255, 0.12);
         }
 
         .about-box h3 {
@@ -462,9 +463,7 @@
             margin: 0;
         }
 
-        /* =========================
-           CONTACTO
-        ========================= */
+        /* CONTACTO */
 
         .contact {
             padding: 100px 8%;
@@ -479,12 +478,11 @@
 
         .contact p {
             color: #91a4b9;
+            line-height: 1.7;
             margin-bottom: 30px;
         }
 
-        /* =========================
-           FOOTER
-        ========================= */
+        /* PIE DE PÁGINA */
 
         footer {
             padding: 25px 8%;
@@ -493,14 +491,12 @@
             color: #708398;
             text-align: center;
             font-size: 13px;
+            line-height: 1.7;
         }
 
-        /* =========================
-           RESPONSIVE
-        ========================= */
+        /* ADAPTACIÓN A MÓVILES */
 
         @media (max-width: 900px) {
-
             .navbar {
                 padding: 18px 5%;
             }
@@ -542,7 +538,6 @@
         }
 
         @media (max-width: 600px) {
-
             .logo-text {
                 font-size: 18px;
             }
@@ -574,19 +569,24 @@
             .features {
                 grid-template-columns: 1fr;
             }
+
+            .about-box {
+                padding: 25px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- =========================
-         BARRA DE NAVEGACIÓN
-    ========================== -->
+    <!-- BARRA DE NAVEGACIÓN -->
 
     <nav class="navbar">
 
-        <div class="logo-container">
+        <a href="#inicio"
+           class="logo-container"
+           style="text-decoration: none; color: white;"
+           aria-label="Ir al inicio de Rescate Móvil">
 
             <img
                 src="img/logo.jpg"
@@ -596,7 +596,7 @@
                 Rescate <span>Móvil</span>
             </div>
 
-        </div>
+        </a>
 
         <div class="nav-links">
 
@@ -605,9 +605,7 @@
             <a href="#nosotros">Nosotros</a>
             <a href="#contacto">Contacto</a>
 
-            <a
-                href="login.jsp"
-                class="btn-login">
+            <a href="login.jsp" class="btn-login">
                 Iniciar sesión
             </a>
 
@@ -615,10 +613,7 @@
 
     </nav>
 
-
-    <!-- =========================
-         HERO
-    ========================== -->
+    <!-- PORTADA PRINCIPAL -->
 
     <main id="inicio">
 
@@ -627,7 +622,7 @@
             <div class="hero-content">
 
                 <div class="badge">
-                    📱 SERVICIO TÉCNICO PROFESIONAL
+                    SERVICIO TÉCNICO PROFESIONAL
                 </div>
 
                 <h1>
@@ -644,15 +639,11 @@
 
                 <div class="hero-buttons">
 
-                    <a
-                        href="#servicios"
-                        class="btn-primary">
+                    <a href="#servicios" class="btn-primary">
                         Ver nuestros servicios →
                     </a>
 
-                    <a
-                        href="login.jsp"
-                        class="btn-secondary">
+                    <a href="login.jsp" class="btn-secondary">
                         Iniciar sesión
                     </a>
 
@@ -660,26 +651,22 @@
 
             </div>
 
-
-            <!-- TELÉFONO -->
+            <!-- TELÉFONO CON EL LOGO -->
 
             <div class="phone-area">
 
                 <div class="phone">
 
                     <div class="phone-notch"></div>
-
                     <div class="phone-button"></div>
 
                     <div class="phone-screen">
 
                         <img
                             src="img/logo.jpg"
-                            alt="Logo Rescate Móvil">
+                            alt="Logo de Rescate Móvil">
 
-                        <h2>
-                            Rescate Móvil
-                        </h2>
+                        <h2>Rescate Móvil</h2>
 
                         <p>
                             Tecnología, reparación y confianza
@@ -694,24 +681,15 @@
 
         </section>
 
+        <!-- SERVICIOS -->
 
-        <!-- =========================
-             SERVICIOS
-        ========================== -->
-
-        <section
-            class="services"
-            id="servicios">
+        <section class="services" id="servicios">
 
             <div class="section-title">
 
-                <small>
-                    Lo que hacemos
-                </small>
+                <small>Lo que hacemos</small>
 
-                <h2>
-                    Nuestros servicios
-                </h2>
+                <h2>Nuestros servicios</h2>
 
                 <p>
                     Soluciones pensadas para mantener
@@ -720,18 +698,13 @@
 
             </div>
 
-
             <div class="cards">
 
                 <div class="card">
 
-                    <div class="card-icon">
-                        🔧
-                    </div>
+                    <div class="card-icon">🔧</div>
 
-                    <h3>
-                        Reparación
-                    </h3>
+                    <h3>Reparación</h3>
 
                     <p>
                         Diagnóstico y reparación de diferentes
@@ -740,16 +713,11 @@
 
                 </div>
 
-
                 <div class="card">
 
-                    <div class="card-icon">
-                        📱
-                    </div>
+                    <div class="card-icon">📱</div>
 
-                    <h3>
-                        Mantenimiento
-                    </h3>
+                    <h3>Mantenimiento</h3>
 
                     <p>
                         Mantenimiento preventivo y correctivo
@@ -758,16 +726,11 @@
 
                 </div>
 
-
                 <div class="card">
 
-                    <div class="card-icon">
-                        🔍
-                    </div>
+                    <div class="card-icon">🔍</div>
 
-                    <h3>
-                        Diagnóstico
-                    </h3>
+                    <h3>Diagnóstico</h3>
 
                     <p>
                         Revisamos tu dispositivo para identificar
@@ -780,14 +743,9 @@
 
         </section>
 
+        <!-- NOSOTROS -->
 
-        <!-- =========================
-             NOSOTROS
-        ========================== -->
-
-        <section
-            class="about"
-            id="nosotros">
+        <section class="about" id="nosotros">
 
             <div class="about-container">
 
@@ -810,76 +768,44 @@
                         y ventas desde una plataforma centralizada.
                     </p>
 
-
                     <div class="features">
 
                         <div class="feature">
-
-                            <strong>
-                                ⚡ Atención
-                            </strong>
-
-                            <span>
-                                Gestión organizada de servicios.
-                            </span>
-
+                            <strong>⚡ Atención</strong>
+                            <span>Gestión organizada de servicios.</span>
                         </div>
 
-
                         <div class="feature">
-
-                            <strong>
-                                🛠️ Técnicos
-                            </strong>
-
-                            <span>
-                                Administración del personal técnico.
-                            </span>
-
+                            <strong>🛠️ Técnicos</strong>
+                            <span>Administración del personal técnico.</span>
                         </div>
 
-
                         <div class="feature">
-
-                            <strong>
-                                🔐 Seguridad
-                            </strong>
-
-                            <span>
-                                Acceso mediante usuarios y roles.
-                            </span>
-
+                            <strong>🔐 Seguridad</strong>
+                            <span>Acceso mediante usuarios y roles.</span>
                         </div>
 
-
                         <div class="feature">
-
-                            <strong>
-                                📊 Gestión
-                            </strong>
-
-                            <span>
-                                Información organizada y centralizada.
-                            </span>
-
+                            <strong>📊 Gestión</strong>
+                            <span>Información organizada y centralizada.</span>
                         </div>
 
                     </div>
 
                 </div>
 
+                <!-- PRESENTACIÓN DEL LOGO -->
 
                 <div class="about-box">
 
                     <div>
 
-                        <div class="about-box-icon">
-                            📱
-                        </div>
+                        <img
+                            src="img/logo.jpg"
+                            alt="Logo oficial de Rescate Móvil"
+                            class="about-box-logo">
 
-                        <h3>
-                            Rescate Móvil
-                        </h3>
+                        <h3>Rescate Móvil</h3>
 
                         <p>
                             Una solución tecnológica para
@@ -894,27 +820,18 @@
 
         </section>
 
+        <!-- CONTACTO -->
 
-        <!-- =========================
-             CONTACTO
-        ========================== -->
+        <section class="contact" id="contacto">
 
-        <section
-            class="contact"
-            id="contacto">
-
-            <h2>
-                ¿Necesitas ayuda con tu celular?
-            </h2>
+            <h2>¿Necesitas ayuda con tu celular?</h2>
 
             <p>
                 Ingresa a nuestra plataforma para gestionar
                 tus servicios con Rescate Móvil.
             </p>
 
-            <a
-                href="login.jsp"
-                class="btn-primary">
+            <a href="login.jsp" class="btn-primary">
                 Acceder a la plataforma →
             </a>
 
@@ -922,16 +839,11 @@
 
     </main>
 
-
-    <!-- =========================
-         FOOTER
-    ========================== -->
+    <!-- PIE DE PÁGINA -->
 
     <footer>
-
         © 2026 Rescate Móvil |
         Plataforma de gestión de servicios técnicos móviles
-
     </footer>
 
 </body>

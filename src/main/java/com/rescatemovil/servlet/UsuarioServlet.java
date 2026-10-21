@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 
 package com.rescatemovil.servlet;
 
@@ -17,507 +13,309 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Arrays;
 
 @WebServlet("/admin/usuarios")
 public class UsuarioServlet extends HttpServlet {
 
-    private final UsuarioDAO usuarioDAO =
-            new UsuarioDAO();
+    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
-    @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+    private boolean esAdministrador(HttpServletRequest request,
+                                    HttpServletResponse response)
+            throws IOException {
 
-        HttpSession session =
-                request.getSession(false);
+        HttpSession session = request.getSession(false);
 
         if (session == null) {
             response.sendRedirect(
-                    request.getContextPath()
-                    + "/login.jsp"
+                    request.getContextPath() + "/login.jsp"
             );
-            return;
+            return false;
         }
 
-        String rol =
-                (String) session.getAttribute("rol");
+        String rol = (String) session.getAttribute("rol");
 
-        if (rol == null
-                || !rol.equalsIgnoreCase("admin")) {
-
+        if (rol == null || !rol.equalsIgnoreCase("admin")) {
             response.sendRedirect(
-                    request.getContextPath()
-                    + "/login.jsp?error=acceso"
+                    request.getContextPath() + "/login.jsp?error=acceso"
             );
+            return false;
+        }
 
+        return true;
+    }
+
+    private boolean correoValido(String correo) {
+        if (correo == null) {
+            return false;
+        }
+
+        return correo.matches(
+                "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+        );
+    }
+
+    private boolean rolValido(String rol) {
+        return rol != null
+                && Arrays.asList("admin", "tecnico", "cliente")
+                        .contains(rol.trim().toLowerCase());
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws ServletException, IOException {
+
+        if (!esAdministrador(request, response)) {
             return;
         }
 
-        String accion =
-                request.getParameter("action");
+        String accion = request.getParameter("action");
 
-        /*
-         * =====================================
-         * EDITAR USUARIO
-         * =====================================
-         */
         if ("editar".equalsIgnoreCase(accion)) {
 
-            String idParametro =
-                    request.getParameter("id");
-
-            if (idParametro == null
-                    || idParametro.trim().isEmpty()) {
-
-                response.sendRedirect(
-                        request.getContextPath()
-                        + "/admin/usuarios"
-                );
-
-                return;
-            }
+            String idParametro = request.getParameter("id");
 
             try {
+                long id = Long.parseLong(idParametro);
 
-                long id =
-                        Long.parseLong(
-                                idParametro
-                        );
+                if (id <= 0) {
+                    throw new NumberFormatException();
+                }
 
-                Usuario usuario =
-                        usuarioDAO.buscarPorId(id);
+                Usuario usuario = usuarioDAO.buscarPorId(id);
 
                 if (usuario == null) {
-
                     response.sendRedirect(
                             request.getContextPath()
                             + "/admin/usuarios?error=noencontrado"
                     );
-
                     return;
                 }
 
-                request.setAttribute(
-                        "usuario",
-                        usuario
-                );
-
+                request.setAttribute("usuario", usuario);
                 request.getRequestDispatcher(
                         "/admin/editar-usuario.jsp"
-                ).forward(
-                        request,
-                        response
-                );
-
+                ).forward(request, response);
                 return;
 
-            } catch (NumberFormatException e) {
-
+            } catch (NumberFormatException | NullPointerException e) {
                 response.sendRedirect(
                         request.getContextPath()
                         + "/admin/usuarios?error=id"
                 );
-
                 return;
             }
         }
 
-        /*
-         * =====================================
-         * ELIMINAR USUARIO
-         * =====================================
-         */
         if ("eliminar".equalsIgnoreCase(accion)) {
 
-            String idParametro =
-                    request.getParameter("id");
-
-            if (idParametro == null
-                    || idParametro.trim().isEmpty()) {
-
-                response.sendRedirect(
-                        request.getContextPath()
-                        + "/admin/usuarios?error=id"
+            try {
+                long id = Long.parseLong(
+                        request.getParameter("id")
                 );
 
-                return;
-            }
-
-            try {
-
-                long id =
-                        Long.parseLong(
-                                idParametro
-                        );
-
-                boolean eliminado =
-                        usuarioDAO.eliminarUsuario(id);
-
-                if (eliminado) {
-
-                    response.sendRedirect(
-                            request.getContextPath()
-                            + "/admin/usuarios?mensaje=eliminado"
-                    );
-
-                } else {
-
-                    response.sendRedirect(
-                            request.getContextPath()
-                            + "/admin/usuarios?error=eliminar"
-                    );
+                if (id <= 0) {
+                    throw new NumberFormatException();
                 }
 
+                boolean eliminado = usuarioDAO.eliminarUsuario(id);
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + (eliminado
+                        ? "/admin/usuarios?mensaje=eliminado"
+                        : "/admin/usuarios?error=eliminar")
+                );
                 return;
 
-            } catch (NumberFormatException e) {
-
+            } catch (NumberFormatException | NullPointerException e) {
                 response.sendRedirect(
                         request.getContextPath()
                         + "/admin/usuarios?error=id"
                 );
-
                 return;
             }
         }
 
-        /*
-         * =====================================
-         * LISTAR USUARIOS
-         * =====================================
-         */
-
-        List<Usuario> usuarios =
-                usuarioDAO.listarUsuarios();
-
-        request.setAttribute(
-                "usuarios",
-                usuarios
-        );
+        List<Usuario> usuarios = usuarioDAO.listarUsuarios();
+        request.setAttribute("usuarios", usuarios);
 
         request.getRequestDispatcher(
                 "/admin/usuarios.jsp"
-        ).forward(
-                request,
-                response
-        );
+        ).forward(request, response);
     }
 
     @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
 
-        HttpSession session =
-                request.getSession(false);
-
-        if (session == null) {
-
-            response.sendRedirect(
-                    request.getContextPath()
-                    + "/login.jsp"
-            );
-
+        if (!esAdministrador(request, response)) {
             return;
         }
 
-        String rol =
-                (String) session.getAttribute("rol");
-
-        if (rol == null
-                || !rol.equalsIgnoreCase("admin")) {
-
-            response.sendRedirect(
-                    request.getContextPath()
-                    + "/login.jsp?error=acceso"
-            );
-
-            return;
-        }
-
-        String accion =
-                request.getParameter("accion");
-
-        /*
-         * =====================================
-         * ACTUALIZAR USUARIO
-         * =====================================
-         */
+        String accion = request.getParameter("accion");
 
         if ("editar".equalsIgnoreCase(accion)) {
-
-            actualizarUsuario(
-                    request,
-                    response
-            );
-
-            return;
+            actualizarUsuario(request, response);
+        } else {
+            crearUsuario(request, response);
         }
-
-        /*
-         * =====================================
-         * CREAR USUARIO
-         * =====================================
-         */
-
-        crearUsuario(
-                request,
-                response
-        );
     }
 
-    private void crearUsuario(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    private void crearUsuario(HttpServletRequest request,
+                              HttpServletResponse response)
             throws IOException {
 
-        String nombre =
-                request.getParameter("nombre");
+        String nombre = limpiar(request.getParameter("nombre"));
+        String nombreUsuario = limpiar(request.getParameter("usuario"));
+        String correo = limpiar(request.getParameter("correo"));
+        String telefono = limpiar(request.getParameter("telefono"));
+        String rolNuevo = limpiar(request.getParameter("rol"));
+        String password = request.getParameter("password");
+        String activoParametro = request.getParameter("activo");
 
-        String usuario =
-                request.getParameter("usuario");
+        String base = request.getContextPath()
+                + "/admin/nuevo-usuario.jsp";
 
-        String correo =
-                request.getParameter("correo");
-
-        String telefono =
-                request.getParameter("telefono");
-
-        String rolNuevo =
-                request.getParameter("rol");
-
-        String password =
-                request.getParameter("password");
-
-        String activoParametro =
-                request.getParameter("activo");
-
-        if (nombre == null
-                || nombre.trim().isEmpty()
-                || usuario == null
-                || usuario.trim().isEmpty()
-                || correo == null
-                || correo.trim().isEmpty()
-                || rolNuevo == null
-                || rolNuevo.trim().isEmpty()
-                || password == null
-                || password.isEmpty()) {
-
-            response.sendRedirect(
-                    request.getContextPath()
-                    + "/admin/nuevo-usuario.jsp?error=datos"
-            );
-
+        if (vacio(nombre) || vacio(nombreUsuario)
+                || vacio(correo) || vacio(rolNuevo)
+                || password == null || password.trim().isEmpty()) {
+            response.sendRedirect(base + "?error=datos");
             return;
         }
 
-        Usuario nuevoUsuario =
-                new Usuario();
-
-        nuevoUsuario.setNombre(
-                nombre.trim()
-        );
-
-        nuevoUsuario.setUsuario(
-                usuario.trim()
-        );
-
-        nuevoUsuario.setCorreo(
-                correo.trim()
-        );
-
-        if (telefono != null) {
-
-            nuevoUsuario.setTelefono(
-                    telefono.trim()
-            );
-
-        } else {
-
-            nuevoUsuario.setTelefono("");
+        if (!correoValido(correo)) {
+            response.sendRedirect(base + "?error=formatoCorreo");
+            return;
         }
 
-        nuevoUsuario.setRol(
-                rolNuevo.trim()
-        );
-
-        nuevoUsuario.setPasswordHash(
-                password
-        );
-
-        boolean activo = true;
-
-        if ("0".equals(activoParametro)) {
-            activo = false;
+        if (!rolValido(rolNuevo)) {
+            response.sendRedirect(base + "?error=rol");
+            return;
         }
 
-        nuevoUsuario.setActivo(
-                activo
-        );
+        if (password.length() < 8) {
+            response.sendRedirect(base + "?error=password");
+            return;
+        }
 
-        boolean registrado =
-                usuarioDAO.insertarUsuario(
-                        nuevoUsuario
-                );
+        if (usuarioDAO.existeUsuario(nombreUsuario, 0)) {
+            response.sendRedirect(base + "?error=usuario");
+            return;
+        }
+
+        if (usuarioDAO.existeCorreo(correo, 0)) {
+            response.sendRedirect(base + "?error=correo");
+            return;
+        }
+
+        Usuario nuevoUsuario = new Usuario();
+        nuevoUsuario.setNombre(nombre);
+        nuevoUsuario.setUsuario(nombreUsuario);
+        nuevoUsuario.setCorreo(correo);
+        nuevoUsuario.setTelefono(telefono);
+        nuevoUsuario.setRol(rolNuevo.toLowerCase());
+        nuevoUsuario.setPasswordHash(password);
+        nuevoUsuario.setActivo(!"0".equals(activoParametro));
+
+        boolean registrado = usuarioDAO.insertarUsuario(nuevoUsuario);
 
         if (registrado) {
-
             response.sendRedirect(
                     request.getContextPath()
-                    + "/admin/usuarios"
+                    + "/admin/usuarios?mensaje=creado"
             );
-
         } else {
-
-            response.sendRedirect(
-                    request.getContextPath()
-                    + "/admin/nuevo-usuario.jsp?error=registro"
-            );
+            response.sendRedirect(base + "?error=registro");
         }
     }
 
-    private void actualizarUsuario(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    private void actualizarUsuario(HttpServletRequest request,
+                                  HttpServletResponse response)
             throws IOException {
 
-        String idParametro =
-                request.getParameter("id");
-
-        String nombre =
-                request.getParameter("nombre");
-
-        String usuario =
-                request.getParameter("usuario");
-
-        String correo =
-                request.getParameter("correo");
-
-        String telefono =
-                request.getParameter("telefono");
-
-        String rolNuevo =
-                request.getParameter("rol");
-
-        String activoParametro =
-                request.getParameter("activo");
-
-        if (idParametro == null
-                || idParametro.trim().isEmpty()) {
-
-            response.sendRedirect(
-                    request.getContextPath()
-                    + "/admin/usuarios?error=id"
-            );
-
-            return;
-        }
+        String idParametro = request.getParameter("id");
+        String nombre = limpiar(request.getParameter("nombre"));
+        String nombreUsuario = limpiar(request.getParameter("usuario"));
+        String correo = limpiar(request.getParameter("correo"));
+        String telefono = limpiar(request.getParameter("telefono"));
+        String rolNuevo = limpiar(request.getParameter("rol"));
+        String activoParametro = request.getParameter("activo");
 
         long id;
 
         try {
+            id = Long.parseLong(idParametro);
 
-            id =
-                    Long.parseLong(
-                            idParametro
-                    );
-
-        } catch (NumberFormatException e) {
-
+            if (id <= 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException | NullPointerException e) {
             response.sendRedirect(
-                    request.getContextPath()
-                    + "/admin/usuarios?error=id"
+                    request.getContextPath() + "/admin/usuarios?error=id"
             );
-
             return;
         }
 
-        if (nombre == null
-                || nombre.trim().isEmpty()
-                || usuario == null
-                || usuario.trim().isEmpty()
-                || correo == null
-                || correo.trim().isEmpty()
-                || rolNuevo == null
-                || rolNuevo.trim().isEmpty()) {
+        String base = request.getContextPath()
+                + "/admin/usuarios?action=editar&id=" + id;
 
-            response.sendRedirect(
-                    request.getContextPath()
-                    + "/admin/usuarios?action=editar&id="
-                    + id
-                    + "&error=datos"
-            );
-
+        if (vacio(nombre) || vacio(nombreUsuario)
+                || vacio(correo) || vacio(rolNuevo)) {
+            response.sendRedirect(base + "&error=datos");
             return;
         }
 
-        Usuario usuarioEditar =
-                new Usuario();
+        if (!correoValido(correo)) {
+            response.sendRedirect(base + "&error=formatoCorreo");
+            return;
+        }
 
+        if (!rolValido(rolNuevo)) {
+            response.sendRedirect(base + "&error=rol");
+            return;
+        }
+
+        if (usuarioDAO.existeUsuario(nombreUsuario, id)) {
+            response.sendRedirect(base + "&error=usuario");
+            return;
+        }
+
+        if (usuarioDAO.existeCorreo(correo, id)) {
+            response.sendRedirect(base + "&error=correo");
+            return;
+        }
+
+        Usuario usuarioEditar = new Usuario();
         usuarioEditar.setId(id);
+        usuarioEditar.setNombre(nombre);
+        usuarioEditar.setUsuario(nombreUsuario);
+        usuarioEditar.setCorreo(correo);
+        usuarioEditar.setTelefono(telefono);
+        usuarioEditar.setRol(rolNuevo.toLowerCase());
+        usuarioEditar.setActivo(!"0".equals(activoParametro));
 
-        usuarioEditar.setNombre(
-                nombre.trim()
-        );
-
-        usuarioEditar.setUsuario(
-                usuario.trim()
-        );
-
-        usuarioEditar.setCorreo(
-                correo.trim()
-        );
-
-        if (telefono != null) {
-
-            usuarioEditar.setTelefono(
-                    telefono.trim()
-            );
-
-        } else {
-
-            usuarioEditar.setTelefono("");
-        }
-
-        usuarioEditar.setRol(
-                rolNuevo.trim()
-        );
-
-        boolean activo = true;
-
-        if ("0".equals(activoParametro)) {
-            activo = false;
-        }
-
-        usuarioEditar.setActivo(
-                activo
-        );
-
-        boolean actualizado =
-                usuarioDAO.actualizarUsuario(
-                        usuarioEditar
-                );
+        boolean actualizado = usuarioDAO.actualizarUsuario(usuarioEditar);
 
         if (actualizado) {
-
             response.sendRedirect(
                     request.getContextPath()
-                    + "/admin/usuarios"
+                    + "/admin/usuarios?mensaje=actualizado"
             );
-
         } else {
-
-            response.sendRedirect(
-                    request.getContextPath()
-                    + "/admin/usuarios?action=editar&id="
-                    + id
-                    + "&error=actualizar"
-            );
+            response.sendRedirect(base + "&error=actualizar");
         }
+    }
+
+    private String limpiar(String valor) {
+        return valor == null ? "" : valor.trim();
+    }
+
+    private boolean vacio(String valor) {
+        return valor == null || valor.trim().isEmpty();
     }
 }

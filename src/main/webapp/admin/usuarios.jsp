@@ -4,39 +4,29 @@
     Author     : Luis Alejandro Murillo Diaz
 --%>
 
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="com.rescatemovil.modelo.Usuario"%>
 
 <%
-    String usuarioSesion =
-            (String) session.getAttribute("usuario");
-
-    String rolSesion =
-            (String) session.getAttribute("rol");
+    String usuarioSesion = (String) session.getAttribute("usuario");
+    String rolSesion = (String) session.getAttribute("rol");
 
     if (usuarioSesion == null || rolSesion == null) {
-        response.sendRedirect(
-                request.getContextPath() + "/login.jsp"
-        );
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
         return;
     }
 
     if (!"admin".equalsIgnoreCase(rolSesion)) {
-        response.sendRedirect(
-                request.getContextPath()
-                + "/login.jsp?error=acceso"
-        );
+        response.sendRedirect(request.getContextPath() + "/login.jsp?error=acceso");
         return;
     }
 
     List<Usuario> usuarios =
-            (List<Usuario>) request.getAttribute("usuarios");
+        (List<Usuario>) request.getAttribute("usuarios");
 
-    String mensaje =
-            request.getParameter("mensaje");
-
-    String error =
-            request.getParameter("error");
+    String mensaje = request.getParameter("mensaje");
+    String error = request.getParameter("error");
 
     int totalUsuarios = 0;
     int administradores = 0;
@@ -45,17 +35,14 @@
     int activos = 0;
 
     if (usuarios != null) {
-
         totalUsuarios = usuarios.size();
 
         for (Usuario u : usuarios) {
-
             if (u.isActivo()) {
                 activos++;
             }
 
             if (u.getRol() != null) {
-
                 if ("admin".equalsIgnoreCase(u.getRol())) {
                     administradores++;
                 }
@@ -74,18 +61,26 @@
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>GestiÛn de Usuarios | Rescate MÛvil</title>
+    <title>Gesti√≥n de usuarios | Rescate M√≥vil</title>
 
     <style>
+        :root {
+            --fondo: #07111f;
+            --fondo-secundario: #0a1628;
+            --tarjeta: #101e32;
+            --tarjeta-hover: #14243a;
+            --borde: #263b55;
+            --texto: #f1f5f9;
+            --texto-secundario: #9aadc4;
+            --cian: #00b4d8;
+            --azul: #4361ee;
+            --verde: #10b981;
+            --rojo: #ef4444;
+        }
 
         * {
             margin: 0;
@@ -93,481 +88,349 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family:
-                "Segoe UI",
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            background: #f5f7fb;
-            color: #1e293b;
+        html {
+            min-height: 100%;
         }
 
-        /* ================================
-           CONTENEDOR PRINCIPAL
-           ================================ */
+        body {
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+            color: var(--texto);
+            background:
+                radial-gradient(
+                    circle at 12% 0%,
+                    rgba(0, 180, 216, 0.12),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 90% 12%,
+                    rgba(67, 97, 238, 0.13),
+                    transparent 30%
+                ),
+                var(--fondo);
+        }
+
+        a {
+            color: inherit;
+        }
 
         .dashboard {
             display: flex;
             min-height: 100vh;
         }
 
-        /* ================================
-           SIDEBAR
-           ================================ */
+        /* BARRA LATERAL */
 
         .sidebar {
             width: 250px;
             min-height: 100vh;
-
-            background:
-                linear-gradient(
-                    180deg,
-                    #0f172a 0%,
-                    #172554 100%
-                );
-
+            background: linear-gradient(180deg, #07111f, #0b1d35);
             color: white;
-
             position: fixed;
             left: 0;
             top: 0;
             bottom: 0;
-
             display: flex;
             flex-direction: column;
-
-            box-shadow:
-                5px 0 25px rgba(
-                    15,
-                    23,
-                    42,
-                    0.12
-                );
-
+            border-right: 1px solid rgba(0, 180, 216, 0.20);
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.18);
             z-index: 100;
+            overflow-y: auto;
         }
 
         .logo-area {
-            padding: 28px 22px;
-
+            padding: 25px 20px;
             display: flex;
             align-items: center;
-            gap: 13px;
-
-            border-bottom:
-                1px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.08
-                );
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .logo {
-            width: 46px;
-            height: 46px;
-
+            width: 45px;
+            height: 45px;
             object-fit: cover;
-
-            border-radius: 12px;
-
-            border:
-                2px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.2
-                );
+            border-radius: 11px;
+            border: 1px solid rgba(0, 180, 216, 0.35);
+            background: #101e32;
         }
 
         .logo-text h2 {
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: 0.2px;
+            font-size: 16px;
+            font-weight: 750;
+        }
+
+        .logo-text h2 span {
+            color: var(--cian);
         }
 
         .logo-text span {
             display: block;
-
-            margin-top: 3px;
-
-            color: #94a3b8;
-
-            font-size: 11px;
+            margin-top: 4px;
+            color: var(--texto-secundario);
+            font-size: 10px;
         }
 
         .menu {
-            padding: 25px 14px;
+            padding: 22px 13px;
             flex: 1;
         }
 
         .menu-title {
-            padding:
-                0 12px 10px;
-
-            color: #64748b;
-
+            padding: 0 12px 12px;
+            color: #7187a2;
             font-size: 10px;
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: 1.2px;
         }
 
         .menu a {
             display: flex;
             align-items: center;
-            gap: 12px;
-
-            padding: 12px 13px;
-
+            gap: 11px;
+            padding: 11px 12px;
             margin-bottom: 5px;
-
+            border: 1px solid transparent;
             border-radius: 9px;
-
-            color: #cbd5e1;
-
+            color: #bdcce0;
             text-decoration: none;
-
-            font-size: 13px;
-
-            transition:
-                background 0.2s,
-                color 0.2s,
-                transform 0.2s;
+            font-size: 12px;
+            transition: 0.2s ease;
         }
 
         .menu a:hover {
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.07
-                );
-
             color: white;
-
-            transform:
-                translateX(2px);
+            background: rgba(0, 180, 216, 0.08);
+            border-color: rgba(0, 180, 216, 0.15);
         }
 
         .menu a.activo {
-            background:
-                linear-gradient(
-                    135deg,
-                    #2563eb,
-                    #1d4ed8
-                );
-
-            color: white;
-
-            box-shadow:
-                0 5px 15px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.25
-                );
+            color: #ffffff;
+            background: linear-gradient(
+                110deg,
+                rgba(0, 180, 216, 0.18),
+                rgba(67, 97, 238, 0.18)
+            );
+            border-color: rgba(0, 180, 216, 0.32);
+            box-shadow: inset 3px 0 0 var(--cian);
         }
 
         .icono-menu {
-            width: 27px;
-            height: 27px;
-
+            width: 29px;
+            height: 29px;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-
-            border-radius: 7px;
-
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.06
-                );
-
-            font-size: 13px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.055);
+            color: #b8d7f0;
+            font-size: 10px;
+            font-weight: 800;
         }
 
         .menu a.activo .icono-menu {
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.15
-                );
+            background: rgba(0, 180, 216, 0.15);
+            color: #6be7ff;
         }
 
         .usuario-sidebar {
-            padding: 18px;
-
-            border-top:
-                1px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.08
-                );
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .usuario-box {
             display: flex;
             align-items: center;
             gap: 10px;
-
             padding: 10px;
-
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 10px;
-
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.05
-                );
+            background: rgba(255, 255, 255, 0.035);
         }
 
         .avatar-sidebar {
             width: 35px;
             height: 35px;
-
+            flex-shrink: 0;
             border-radius: 50%;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #3b82f6,
-                    #6366f1
-                );
-
+            background: linear-gradient(135deg, #087ea4, #4361ee);
             display: flex;
             align-items: center;
             justify-content: center;
-
+            color: white;
             font-size: 13px;
             font-weight: bold;
         }
 
         .usuario-info {
-            overflow: hidden;
+            min-width: 0;
         }
 
         .usuario-info strong {
             display: block;
-
             color: white;
-
-            font-size: 12px;
-
+            font-size: 11px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .usuario-info span {
-            color: #94a3b8;
+            display: block;
+            margin-top: 3px;
+            color: var(--texto-secundario);
             font-size: 10px;
         }
 
-        /* ================================
-           CONTENIDO
-           ================================ */
+        /* CONTENIDO */
 
         .contenido {
             width: calc(100% - 250px);
-
             margin-left: 250px;
-
             min-height: 100vh;
         }
 
-        /* ================================
-           TOPBAR
-           ================================ */
-
         .topbar {
-            height: 76px;
-
-            background: white;
-
-            border-bottom:
-                1px solid #e2e8f0;
-
+            min-height: 72px;
+            background: rgba(7, 17, 31, 0.88);
+            border-bottom: 1px solid var(--borde);
             display: flex;
             align-items: center;
             justify-content: space-between;
-
-            padding:
-                0 35px;
+            gap: 15px;
+            padding: 15px 32px;
         }
 
         .breadcrumb {
-            color: #64748b;
+            color: var(--texto-secundario);
             font-size: 12px;
         }
 
         .breadcrumb strong {
-            color: #1e293b;
+            color: #e4edf8;
         }
 
         .topbar-right {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .estado-sistema {
             display: flex;
             align-items: center;
             gap: 7px;
-
-            padding:
-                7px 11px;
-
+            padding: 7px 10px;
             border-radius: 20px;
-
-            background: #f0fdf4;
-
-            color: #15803d;
-
-            font-size: 11px;
+            background: rgba(16, 185, 129, 0.09);
+            border: 1px solid rgba(16, 185, 129, 0.20);
+            color: #8ce8bd;
+            font-size: 10px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .punto-online {
             width: 7px;
             height: 7px;
-
             border-radius: 50%;
-
-            background: #22c55e;
+            background: #34d399;
+            box-shadow: 0 0 8px rgba(52, 211, 153, 0.55);
         }
 
         .btn-panel {
             display: inline-flex;
             align-items: center;
             gap: 7px;
-
-            padding:
-                9px 14px;
-
-            border:
-                1px solid #e2e8f0;
-
+            padding: 9px 12px;
+            border: 1px solid var(--borde);
             border-radius: 8px;
-
-            background: white;
-
-            color: #475569;
-
+            background: #101e32;
+            color: #dce8f6;
             text-decoration: none;
-
-            font-size: 12px;
-            font-weight: 600;
-
+            font-size: 11px;
             transition: 0.2s;
         }
 
         .btn-panel:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
+            border-color: var(--cian);
+            background: #142740;
         }
 
-        /* ================================
-           AREA PRINCIPAL
-           ================================ */
-
         .principal {
-            padding: 32px 35px 45px;
+            padding: 32px;
+            max-width: 1700px;
+            margin: 0 auto;
         }
 
         .cabecera-pagina {
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             justify-content: space-between;
-
             gap: 20px;
+            margin-bottom: 26px;
+        }
 
-            margin-bottom: 27px;
+        .etiqueta {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 10px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0, 180, 216, 0.23);
+            border-radius: 20px;
+            background: rgba(0, 180, 216, 0.08);
+            color: #61def5;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .etiqueta-punto {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--cian);
         }
 
         .cabecera-pagina h1 {
-            color: #0f172a;
-
-            font-size: 28px;
+            color: #f1f5f9;
+            font-size: clamp(25px, 3vw, 32px);
             font-weight: 750;
-
             letter-spacing: -0.6px;
         }
 
         .cabecera-pagina p {
-            margin-top: 7px;
-
-            color: #64748b;
-
+            margin-top: 8px;
+            color: var(--texto-secundario);
             font-size: 13px;
+            line-height: 1.6;
         }
 
         .btn-nuevo {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-
-            padding:
-                11px 17px;
-
+            padding: 12px 16px;
+            flex-shrink: 0;
+            border: 1px solid rgba(0, 180, 216, 0.35);
             border-radius: 9px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #2563eb,
-                    #1d4ed8
-                );
-
+            background: linear-gradient(135deg, #087ea4, #3457d5);
             color: white;
-
             text-decoration: none;
-
             font-size: 12px;
             font-weight: 700;
-
-            box-shadow:
-                0 5px 14px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.2
-                );
-
+            box-shadow: 0 6px 20px rgba(0, 180, 216, 0.12);
             transition: 0.2s;
         }
 
         .btn-nuevo:hover {
-            transform:
-                translateY(-1px);
-
-            box-shadow:
-                0 8px 20px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.28
-                );
+            transform: translateY(-2px);
+            filter: brightness(1.1);
         }
 
         .btn-nuevo span {
@@ -575,582 +438,404 @@
             line-height: 12px;
         }
 
-        /* ================================
-           TARJETAS ESTADISTICAS
-           ================================ */
+        /* ESTAD√çSTICAS */
 
         .estadisticas {
             display: grid;
-
-            grid-template-columns:
-                repeat(
-                    4,
-                    minmax(
-                        0,
-                        1fr
-                    )
-                );
-
-            gap: 17px;
-
-            margin-bottom: 25px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 23px;
         }
 
         .estadistica {
-            background: white;
-
-            border:
-                1px solid #e5e7eb;
-
-            border-radius: 13px;
-
-            padding: 19px;
-
+            min-width: 0;
             display: flex;
             align-items: center;
-
-            gap: 14px;
-
-            box-shadow:
-                0 2px 8px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.03
-                );
-
+            gap: 13px;
+            padding: 19px;
+            border: 1px solid var(--borde);
+            border-radius: 13px;
+            background: linear-gradient(
+                145deg,
+                rgba(16, 30, 50, 0.98),
+                rgba(11, 24, 42, 0.98)
+            );
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
             transition: 0.2s;
         }
 
         .estadistica:hover {
-            transform:
-                translateY(-2px);
-
-            box-shadow:
-                0 8px 20px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.07
-                );
+            transform: translateY(-2px);
+            border-color: #385574;
         }
 
         .icono-estadistica {
             width: 43px;
             height: 43px;
-
             flex-shrink: 0;
-
-            border-radius: 11px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
-            font-size: 18px;
+            border-radius: 11px;
+            font-size: 12px;
+            font-weight: 800;
         }
 
         .icono-azul {
-            background: #eff6ff;
-            color: #2563eb;
+            background: rgba(0, 180, 216, 0.13);
+            color: #6be7ff;
         }
 
         .icono-morado {
-            background: #f5f3ff;
-            color: #7c3aed;
+            background: rgba(139, 92, 246, 0.14);
+            color: #c4b5fd;
         }
 
         .icono-verde {
-            background: #ecfdf5;
-            color: #059669;
+            background: rgba(16, 185, 129, 0.13);
+            color: #6ee7b7;
         }
 
         .icono-naranja {
-            background: #fff7ed;
-            color: #ea580c;
+            background: rgba(249, 115, 22, 0.13);
+            color: #fdba74;
+        }
+
+        .estadistica-info {
+            min-width: 0;
         }
 
         .estadistica-info span {
             display: block;
-
-            color: #64748b;
-
+            margin-bottom: 7px;
+            color: var(--texto-secundario);
             font-size: 11px;
-
-            margin-bottom: 4px;
         }
 
         .estadistica-info strong {
             display: block;
-
-            color: #0f172a;
-
-            font-size: 22px;
+            color: #f1f5f9;
+            font-size: 24px;
             line-height: 1;
         }
 
-        /* ================================
-           MENSAJES
-           ================================ */
+        /* MENSAJES */
 
         .mensaje {
-            padding:
-                13px 16px;
-
+            padding: 13px 16px;
+            margin-bottom: 18px;
             border-radius: 9px;
-
-            margin-bottom: 20px;
-
-            font-size: 13px;
+            font-size: 12px;
+            line-height: 1.6;
         }
 
         .mensaje-exito {
-            background: #ecfdf5;
-            border: 1px solid #bbf7d0;
-            color: #166534;
+            color: #a7f3d0;
+            background: rgba(16, 185, 129, 0.10);
+            border: 1px solid rgba(16, 185, 129, 0.26);
         }
 
         .mensaje-error {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
+            color: #fecaca;
+            background: rgba(239, 68, 68, 0.10);
+            border: 1px solid rgba(239, 68, 68, 0.27);
         }
 
-        /* ================================
-           TARJETA TABLA
-           ================================ */
+        /* TABLA */
 
         .tabla-card {
-            background: white;
-
-            border:
-                1px solid #e5e7eb;
-
-            border-radius: 14px;
-
             overflow: hidden;
-
-            box-shadow:
-                0 2px 10px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.035
-                );
+            border: 1px solid var(--borde);
+            border-radius: 14px;
+            background: rgba(13, 27, 46, 0.97);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.13);
         }
 
         .tabla-header {
-            padding:
-                20px 22px;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
-            gap: 20px;
-
-            border-bottom:
-                1px solid #e5e7eb;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--borde);
         }
 
         .tabla-titulo h2 {
-            color: #0f172a;
-
+            color: #f1f5f9;
             font-size: 16px;
             font-weight: 700;
         }
 
         .tabla-titulo p {
-            margin-top: 4px;
-
-            color: #94a3b8;
-
+            margin-top: 6px;
+            color: var(--texto-secundario);
             font-size: 11px;
         }
 
-        /* ================================
-           BUSCADOR
-           ================================ */
-
         .buscador {
             position: relative;
-
             width: 270px;
+            max-width: 100%;
         }
 
         .buscador input {
             width: 100%;
-
-            height: 38px;
-
-            padding:
-                0 13px 0 37px;
-
-            border:
-                1px solid #e2e8f0;
-
+            height: 40px;
+            padding: 0 13px 0 38px;
+            border: 1px solid #30445e;
             border-radius: 8px;
-
-            background: #f8fafc;
-
-            color: #334155;
-
             outline: none;
-
+            background: #091526;
+            color: #e2eaf5;
             font-family: inherit;
-
-            font-size: 11px;
-
+            font-size: 12px;
             transition: 0.2s;
         }
 
+        .buscador input::placeholder {
+            color: #7187a2;
+        }
+
         .buscador input:focus {
-            background: white;
-
-            border-color: #93c5fd;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(
-                    59,
-                    130,
-                    246,
-                    0.08
-                );
+            border-color: var(--cian);
+            box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.10);
         }
 
         .icono-busqueda {
             position: absolute;
-
-            left: 13px;
             top: 50%;
-
-            transform:
-                translateY(-50%);
-
-            color: #94a3b8;
-
-            font-size: 14px;
+            left: 13px;
+            transform: translateY(-50%);
+            color: #8ba4bf;
+            font-size: 15px;
         }
-
-        /* ================================
-           TABLA
-           ================================ */
 
         .tabla-contenedor {
             width: 100%;
-
             overflow-x: auto;
         }
 
         table {
             width: 100%;
-
+            min-width: 950px;
             border-collapse: collapse;
-
-            min-width: 1000px;
         }
 
         thead {
-            background: #f8fafc;
+            background: #101f34;
         }
 
         th {
-            padding:
-                12px 20px;
-
-            color: #64748b;
-
+            padding: 13px 18px;
+            color: #9eb4ce;
             text-align: left;
-
             font-size: 10px;
-
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: 0.6px;
-
             white-space: nowrap;
-
-            border-bottom:
-                1px solid #e5e7eb;
+            border-bottom: 1px solid var(--borde);
         }
 
         td {
-            padding:
-                14px 20px;
-
-            color: #475569;
-
+            padding: 14px 18px;
+            color: #cbd8e8;
             font-size: 12px;
-
-            border-bottom:
-                1px solid #f1f5f9;
-
+            border-bottom: 1px solid rgba(38, 59, 85, 0.68);
             vertical-align: middle;
         }
 
         tbody tr {
-            transition:
-                background 0.15s;
+            transition: background 0.2s;
         }
 
         tbody tr:hover {
-            background: #fafcff;
+            background: rgba(0, 180, 216, 0.035);
         }
 
         tbody tr:last-child td {
             border-bottom: none;
         }
 
-        /* ================================
-           USUARIO
-           ================================ */
-
         .usuario-celda {
             display: flex;
             align-items: center;
             gap: 10px;
-
             min-width: 170px;
         }
 
         .avatar {
-            width: 36px;
-            height: 36px;
-
+            width: 37px;
+            height: 37px;
             flex-shrink: 0;
-
-            border-radius: 50%;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #dbeafe,
-                    #bfdbfe
-                );
-
-            color: #1d4ed8;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
-            font-size: 12px;
+            border: 1px solid rgba(0, 180, 216, 0.25);
+            border-radius: 50%;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 180, 216, 0.18),
+                rgba(67, 97, 238, 0.24)
+            );
+            color: #8beaff;
+            font-size: 13px;
             font-weight: 800;
         }
 
         .nombre-usuario strong {
             display: block;
-
-            color: #1e293b;
-
+            margin-bottom: 4px;
+            color: #f1f5f9;
             font-size: 12px;
-
-            margin-bottom: 3px;
         }
 
         .nombre-usuario span {
             display: block;
-
-            color: #94a3b8;
-
+            color: #8fa5bf;
             font-size: 10px;
         }
 
-        /* ================================
-           ID
-           ================================ */
-
         .id-usuario {
-            color: #94a3b8;
-
-            font-family:
-                Consolas,
-                monospace;
-
+            color: #91a8c2;
+            font-family: Consolas, monospace;
             font-size: 11px;
         }
-
-        /* ================================
-           ROL
-           ================================ */
 
         .rol-badge {
             display: inline-flex;
             align-items: center;
-
-            padding:
-                5px 9px;
-
+            padding: 6px 9px;
+            border: 1px solid transparent;
             border-radius: 6px;
-
             font-size: 10px;
-
             font-weight: 700;
-
             text-transform: capitalize;
         }
 
         .rol-admin {
-            background: #f3e8ff;
-            color: #7e22ce;
+            color: #d8b4fe;
+            background: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.22);
         }
 
         .rol-tecnico {
-            background: #e0f2fe;
-            color: #0369a1;
+            color: #7dd3fc;
+            background: rgba(14, 165, 233, 0.11);
+            border-color: rgba(14, 165, 233, 0.22);
         }
 
         .rol-cliente {
-            background: #f1f5f9;
-            color: #475569;
+            color: #cbd5e1;
+            background: rgba(148, 163, 184, 0.10);
+            border-color: rgba(148, 163, 184, 0.20);
         }
 
         .rol-otro {
-            background: #f8fafc;
-            color: #64748b;
+            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.11);
+            border-color: rgba(99, 102, 241, 0.22);
         }
-
-        /* ================================
-           ESTADO
-           ================================ */
 
         .estado {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-
+            gap: 7px;
             font-size: 10px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .estado-punto {
             width: 7px;
             height: 7px;
-
             border-radius: 50%;
         }
 
         .activo {
-            color: #15803d;
+            color: #86efac;
         }
 
         .activo .estado-punto {
             background: #22c55e;
+            box-shadow: 0 0 7px rgba(34, 197, 94, 0.35);
         }
 
         .inactivo {
-            color: #64748b;
+            color: #a7b4c5;
         }
 
         .inactivo .estado-punto {
             background: #94a3b8;
         }
 
-        /* ================================
-           ACCIONES
-           ================================ */
-
         .acciones {
             display: flex;
             align-items: center;
-
-            gap: 7px;
-
+            gap: 8px;
             white-space: nowrap;
         }
 
         .btn-accion {
-            width: 31px;
-            height: 31px;
-
+            width: 33px;
+            height: 33px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-
-            border-radius: 7px;
-
+            border-radius: 8px;
             text-decoration: none;
-
             font-size: 11px;
-            font-weight: 700;
-
+            font-weight: 800;
             transition: 0.2s;
         }
 
         .btn-editar {
-            background: #eff6ff;
-
-            color: #2563eb;
-
-            border:
-                1px solid #dbeafe;
+            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.25);
         }
 
         .btn-editar:hover {
-            background: #dbeafe;
-
-            transform:
-                translateY(-1px);
+            background: rgba(59, 130, 246, 0.23);
+            transform: translateY(-1px);
         }
 
         .btn-eliminar {
-            background: #fef2f2;
-
-            color: #dc2626;
-
-            border:
-                1px solid #fee2e2;
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.10);
+            border: 1px solid rgba(239, 68, 68, 0.25);
         }
 
         .btn-eliminar:hover {
-            background: #fee2e2;
-
-            transform:
-                translateY(-1px);
+            background: rgba(239, 68, 68, 0.20);
+            transform: translateY(-1px);
         }
 
-        /* ================================
-           SIN DATOS
-           ================================ */
-
         .sin-datos {
+            padding: 55px 20px;
             text-align: center;
-
-            padding:
-                60px 20px;
-
-            color: #64748b;
+            color: var(--texto-secundario);
         }
 
         .sin-datos-icono {
             width: 55px;
             height: 55px;
-
-            margin:
-                0 auto 15px;
-
-            border-radius: 14px;
-
-            background: #f1f5f9;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
-            font-size: 22px;
+            margin: 0 auto 14px;
+            border: 1px solid var(--borde);
+            border-radius: 14px;
+            background: #101e32;
+            color: var(--cian);
+            font-size: 14px;
+            font-weight: 800;
         }
 
         .sin-datos h3 {
-            margin-bottom: 6px;
-
-            color: #334155;
-
+            margin-bottom: 7px;
+            color: #e2eaf5;
             font-size: 15px;
         }
 
@@ -1158,54 +843,52 @@
             font-size: 12px;
         }
 
-        /* ================================
-           PIE DE TABLA
-           ================================ */
-
         .tabla-footer {
-            padding:
-                14px 22px;
-
-            border-top:
-                1px solid #e5e7eb;
-
-            background: #fafbfc;
-
-            color: #94a3b8;
-
-            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 14px 22px;
+            border-top: 1px solid var(--borde);
+            background: #0d1a2d;
+            color: #91a6bf;
+            font-size: 11px;
         }
 
-        /* ================================
-           RESPONSIVE
-           ================================ */
+        .tabla-footer strong {
+            color: #e2eaf5;
+        }
 
-        @media (max-width: 1100px) {
+        .tabla-footer .total-activos {
+            color: #86efac;
+        }
 
+        footer {
+            padding: 24px 18px;
+            border-top: 1px solid rgba(38, 59, 85, 0.55);
+            color: #7388a2;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        @media (max-width: 1200px) {
             .estadisticas {
-                grid-template-columns:
-                    repeat(
-                        2,
-                        minmax(
-                            0,
-                            1fr
-                        )
-                    );
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
+            .principal {
+                padding: 25px 22px;
+            }
         }
 
         @media (max-width: 850px) {
-
             .sidebar {
                 width: 70px;
             }
 
             .logo-area {
                 justify-content: center;
-
-                padding:
-                    18px 10px;
+                padding: 16px 8px;
             }
 
             .logo {
@@ -1220,834 +903,447 @@
                 display: none;
             }
 
+            .menu {
+                padding: 20px 8px;
+            }
+
             .menu a {
                 justify-content: center;
-
-                padding: 12px;
+                padding: 10px 5px;
             }
 
             .usuario-sidebar {
-                padding: 10px;
+                padding: 8px;
             }
 
             .usuario-box {
                 justify-content: center;
-
-                padding: 8px;
+                padding: 6px;
             }
 
             .contenido {
                 width: calc(100% - 70px);
-
                 margin-left: 70px;
             }
 
             .topbar {
-                padding:
-                    0 20px;
-            }
-
-            .principal {
-                padding:
-                    25px 20px 35px;
+                padding: 15px 18px;
             }
 
             .estado-sistema {
                 display: none;
             }
-
         }
 
-        @media (max-width: 650px) {
-
+        @media (max-width: 580px) {
             .estadisticas {
                 grid-template-columns: 1fr;
+                gap: 11px;
             }
 
             .cabecera-pagina {
                 align-items: stretch;
-
                 flex-direction: column;
             }
 
             .btn-nuevo {
+                width: 100%;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .topbar-right {
+                width: 100%;
+            }
+
+            .btn-panel {
+                width: 100%;
                 justify-content: center;
+            }
+
+            .principal {
+                padding: 22px 12px;
             }
 
             .tabla-header {
                 align-items: stretch;
-
                 flex-direction: column;
+                padding: 17px;
             }
 
             .buscador {
                 width: 100%;
             }
-
-            .topbar {
-                height: 65px;
-            }
-
-            .breadcrumb {
-                font-size: 10px;
-            }
-
         }
-
     </style>
-
 </head>
 
 <body>
 
 <div class="dashboard">
 
-    <!-- =================================
-         SIDEBAR
-         ================================= -->
-
     <aside class="sidebar">
 
         <div class="logo-area">
-
             <img
                 src="<%= request.getContextPath() %>/img/logo.jpg"
-                alt="Rescate MÛvil"
+                alt="Rescate M√≥vil"
                 class="logo">
 
             <div class="logo-text">
-
-                <h2>
-                    Rescate MÛvil
-                </h2>
-
-                <span>
-                    Panel administrativo
-                </span>
-
+                <h2>Rescate <span>M√≥vil</span></h2>
+                <span>Panel administrativo</span>
             </div>
-
         </div>
-
 
         <nav class="menu">
 
-            <div class="menu-title">
-                Men˙ principal
-            </div>
+            <div class="menu-title">Men√∫ principal</div>
 
-
-            <a
-                href="<%= request.getContextPath() %>/admin/index.jsp">
-
-                <span class="icono-menu">
-                    IN
-                </span>
-
-                <span>
-                    Inicio
-                </span>
-
+            <a href="<%= request.getContextPath() %>/admin/index.jsp">
+                <span class="icono-menu">IN</span>
+                <span>Inicio</span>
             </a>
 
-
-            <a
-                href="<%= request.getContextPath() %>/admin/usuarios"
-                class="activo">
-
-                <span class="icono-menu">
-                    US
-                </span>
-
-                <span>
-                    Usuarios
-                </span>
-
+            <a href="<%= request.getContextPath() %>/admin/usuarios"
+               class="activo">
+                <span class="icono-menu">US</span>
+                <span>Usuarios</span>
             </a>
 
-
-            <a href="#">
-
-                <span class="icono-menu">
-                    CL
-                </span>
-
-                <span>
-                    Clientes
-                </span>
-
+            <a href="<%= request.getContextPath() %>/admin/clientes">
+                <span class="icono-menu">CL</span>
+                <span>Clientes</span>
             </a>
 
-
-            <a href="#">
-
-                <span class="icono-menu">
-                    TE
-                </span>
-
-                <span>
-                    TÈcnicos
-                </span>
-
+            <a href="<%= request.getContextPath() %>/admin/tecnicos">
+                <span class="icono-menu">TE</span>
+                <span>T√©cnicos</span>
             </a>
 
-
-            <a href="#">
-
-                <span class="icono-menu">
-                    PR
-                </span>
-
-                <span>
-                    Productos
-                </span>
-
+            <a href="<%= request.getContextPath() %>/admin/productos">
+                <span class="icono-menu">PR</span>
+                <span>Productos</span>
             </a>
 
-
-            <a href="#">
-
-                <span class="icono-menu">
-                    RE
-                </span>
-
-                <span>
-                    Reparaciones
-                </span>
-
+            <a href="<%= request.getContextPath() %>/admin/reparaciones">
+                <span class="icono-menu">RE</span>
+                <span>Reparaciones</span>
             </a>
 
-
-            <a href="#">
-
-                <span class="icono-menu">
-                    VE
-                </span>
-
-                <span>
-                    Ventas
-                </span>
-
+            <a href="<%= request.getContextPath() %>/admin/ventas">
+                <span class="icono-menu">VE</span>
+                <span>Ventas</span>
             </a>
 
-
-            <a href="#">
-
-                <span class="icono-menu">
-                    NO
-                </span>
-
-                <span>
-                    Notificaciones
-                </span>
-
+            <a href="<%= request.getContextPath() %>/admin/notificaciones">
+                <span class="icono-menu">NO</span>
+                <span>Notificaciones</span>
             </a>
 
-
-            <a href="#">
-
-                <span class="icono-menu">
-                    RP
-                </span>
-
-                <span>
-                    Reportes
-                </span>
-
+            <a href="<%= request.getContextPath() %>/admin/reportes">
+                <span class="icono-menu">RP</span>
+                <span>Reportes</span>
             </a>
 
         </nav>
 
-
         <div class="usuario-sidebar">
-
             <div class="usuario-box">
 
                 <div class="avatar-sidebar">
-
-                    <%= usuarioSesion != null
-                            && !usuarioSesion.isEmpty()
-                            ? usuarioSesion
-                                .substring(0, 1)
-                                .toUpperCase()
-                            : "A" %>
-
+                    <%= usuarioSesion != null && !usuarioSesion.isEmpty()
+                        ? usuarioSesion.substring(0, 1).toUpperCase()
+                        : "A" %>
                 </div>
 
                 <div class="usuario-info">
-
-                    <strong>
-                        <%= usuarioSesion %>
-                    </strong>
-
-                    <span>
-                        Administrador
-                    </span>
-
+                    <strong><%= usuarioSesion %></strong>
+                    <span>Administrador</span>
                 </div>
 
             </div>
-
         </div>
 
     </aside>
 
-
-    <!-- =================================
-         CONTENIDO
-         ================================= -->
-
     <section class="contenido">
-
-
-        <!-- TOPBAR -->
 
         <header class="topbar">
 
             <div class="breadcrumb">
-
-                Panel administrativo
-                &nbsp;/&nbsp;
-
-                <strong>
-                    GestiÛn de usuarios
-                </strong>
-
+                Panel administrativo &nbsp;/&nbsp;
+                <strong>Gesti√≥n de usuarios</strong>
             </div>
-
 
             <div class="topbar-right">
 
                 <div class="estado-sistema">
-
                     <span class="punto-online"></span>
-
                     Sistema activo
-
                 </div>
-
 
                 <a
                     href="<%= request.getContextPath() %>/admin/index.jsp"
                     class="btn-panel">
-
-                    Volver al panel
-
+                    ‚Üê Volver al panel
                 </a>
 
             </div>
 
         </header>
 
-
-        <!-- CONTENIDO PRINCIPAL -->
-
         <main class="principal">
-
-
-            <!-- CABECERA -->
 
             <div class="cabecera-pagina">
 
                 <div>
+                    <div class="etiqueta">
+                        <span class="etiqueta-punto"></span>
+                        Administraci√≥n
+                    </div>
 
-                    <h1>
-                        GestiÛn de usuarios
-                    </h1>
+                    <h1>Gesti√≥n de usuarios</h1>
 
                     <p>
-                        Administra las cuentas y permisos
-                        de los usuarios de Rescate MÛvil.
+                        Administra las cuentas y permisos de los usuarios
+                        de Rescate M√≥vil.
                     </p>
-
                 </div>
-
 
                 <a
                     href="<%= request.getContextPath() %>/admin/nuevo-usuario.jsp"
                     class="btn-nuevo">
-
-                    <span>
-                        +
-                    </span>
-
+                    <span>+</span>
                     Nuevo usuario
-
                 </a>
 
             </div>
 
-
-            <!-- MENSAJES -->
-
             <% if ("eliminado".equals(mensaje)) { %>
-
                 <div class="mensaje mensaje-exito">
-
                     El usuario fue eliminado correctamente.
-
                 </div>
-
             <% } %>
-
 
             <% if ("noencontrado".equals(error)) { %>
-
                 <div class="mensaje mensaje-error">
-
-                    No se encontrÛ el usuario solicitado.
-
+                    No se encontr√≥ el usuario solicitado.
                 </div>
-
             <% } %>
-
 
             <% if ("eliminar".equals(error)) { %>
-
                 <div class="mensaje mensaje-error">
-
                     No fue posible eliminar el usuario.
-
                 </div>
-
             <% } %>
-
 
             <% if ("id".equals(error)) { %>
-
                 <div class="mensaje mensaje-error">
-
-                    El identificador del usuario no es v·lido.
-
+                    El identificador del usuario no es v√°lido.
                 </div>
-
             <% } %>
-
-
-            <!-- ESTADISTICAS -->
 
             <div class="estadisticas">
 
-
                 <div class="estadistica">
-
-                    <div
-                        class="icono-estadistica icono-azul">
-
-                        US
-
-                    </div>
-
+                    <div class="icono-estadistica icono-azul">US</div>
                     <div class="estadistica-info">
-
-                        <span>
-                            Total usuarios
-                        </span>
-
-                        <strong>
-                            <%= totalUsuarios %>
-                        </strong>
-
+                        <span>Total usuarios</span>
+                        <strong><%= totalUsuarios %></strong>
                     </div>
-
                 </div>
 
-
                 <div class="estadistica">
-
-                    <div
-                        class="icono-estadistica icono-morado">
-
-                        AD
-
-                    </div>
-
+                    <div class="icono-estadistica icono-morado">AD</div>
                     <div class="estadistica-info">
-
-                        <span>
-                            Administradores
-                        </span>
-
-                        <strong>
-                            <%= administradores %>
-                        </strong>
-
+                        <span>Administradores</span>
+                        <strong><%= administradores %></strong>
                     </div>
-
                 </div>
 
-
                 <div class="estadistica">
-
-                    <div
-                        class="icono-estadistica icono-verde">
-
-                        TE
-
-                    </div>
-
+                    <div class="icono-estadistica icono-verde">TE</div>
                     <div class="estadistica-info">
-
-                        <span>
-                            TÈcnicos
-                        </span>
-
-                        <strong>
-                            <%= tecnicos %>
-                        </strong>
-
+                        <span>T√©cnicos</span>
+                        <strong><%= tecnicos %></strong>
                     </div>
-
                 </div>
 
-
                 <div class="estadistica">
-
-                    <div
-                        class="icono-estadistica icono-naranja">
-
-                        CL
-
-                    </div>
-
+                    <div class="icono-estadistica icono-naranja">CL</div>
                     <div class="estadistica-info">
-
-                        <span>
-                            Clientes
-                        </span>
-
-                        <strong>
-                            <%= clientes %>
-                        </strong>
-
+                        <span>Clientes</span>
+                        <strong><%= clientes %></strong>
                     </div>
-
                 </div>
 
             </div>
 
-
-            <!-- TABLA -->
-
             <div class="tabla-card">
-
 
                 <div class="tabla-header">
 
                     <div class="tabla-titulo">
-
-                        <h2>
-                            Usuarios registrados
-                        </h2>
-
-                        <p>
-                            Consulta y administra
-                            las cuentas del sistema.
-                        </p>
-
+                        <h2>Usuarios registrados</h2>
+                        <p>Consulta y administra las cuentas del sistema.</p>
                     </div>
 
-
                     <div class="buscador">
-
-                        <span class="icono-busqueda">
-                            ?
-                        </span>
-
+                        <span class="icono-busqueda">‚åï</span>
                         <input
                             type="text"
                             id="buscarUsuario"
                             placeholder="Buscar usuario..."
-                            onkeyup="filtrarUsuarios()">
-
+                            onkeyup="filtrarUsuarios()"
+                            aria-label="Buscar usuario">
                     </div>
 
                 </div>
 
-
-                <% if (usuarios == null
-                        || usuarios.isEmpty()) { %>
-
+                <% if (usuarios == null || usuarios.isEmpty()) { %>
 
                     <div class="sin-datos">
-
-                        <div class="sin-datos-icono">
-                            US
-                        </div>
-
-                        <h3>
-                            No hay usuarios registrados
-                        </h3>
-
-                        <p>
-                            Actualmente no existen
-                            usuarios para mostrar.
-                        </p>
-
+                        <div class="sin-datos-icono">US</div>
+                        <h3>No hay usuarios registrados</h3>
+                        <p>Actualmente no existen usuarios para mostrar.</p>
                     </div>
 
-
                 <% } else { %>
-
 
                     <div class="tabla-contenedor">
 
                         <table id="tablaUsuarios">
 
                             <thead>
-
                                 <tr>
-
-                                    <th>
-                                        ID
-                                    </th>
-
-                                    <th>
-                                        Usuario
-                                    </th>
-
-                                    <th>
-                                        Correo
-                                    </th>
-
-                                    <th>
-                                        TelÈfono
-                                    </th>
-
-                                    <th>
-                                        Rol
-                                    </th>
-
-                                    <th>
-                                        Estado
-                                    </th>
-
-                                    <th>
-                                        Acciones
-                                    </th>
-
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Correo</th>
+                                    <th>Tel√©fono</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
                                 </tr>
-
                             </thead>
 
-
                             <tbody>
-
 
                             <%
                                 for (Usuario u : usuarios) {
 
-                                    String nombre =
-                                            u.getNombre() != null
-                                            ? u.getNombre()
-                                            : "";
+                                    String nombre = u.getNombre() != null
+                                        ? u.getNombre() : "";
 
-                                    String usuario =
-                                            u.getUsuario() != null
-                                            ? u.getUsuario()
-                                            : "";
+                                    String usuario = u.getUsuario() != null
+                                        ? u.getUsuario() : "";
 
-                                    String correo =
-                                            u.getCorreo() != null
-                                            ? u.getCorreo()
-                                            : "";
+                                    String correo = u.getCorreo() != null
+                                        ? u.getCorreo() : "";
 
-                                    String telefono =
-                                            u.getTelefono() != null
-                                            ? u.getTelefono()
-                                            : "";
+                                    String telefono = u.getTelefono() != null
+                                        ? u.getTelefono() : "";
 
-                                    String rolUsuario =
-                                            u.getRol() != null
-                                            ? u.getRol()
-                                            : "";
+                                    String rolUsuario = u.getRol() != null
+                                        ? u.getRol() : "";
 
-                                    String inicial =
-                                            nombre.isEmpty()
-                                            ? "U"
-                                            : nombre
-                                                .substring(0, 1)
-                                                .toUpperCase();
+                                    String inicial = nombre.isEmpty()
+                                        ? "U"
+                                        : nombre.substring(0, 1).toUpperCase();
 
-                                    String claseRol =
-                                            "rol-otro";
+                                    String claseRol = "rol-otro";
 
-                                    if ("admin".equalsIgnoreCase(
-                                            rolUsuario)) {
-
-                                        claseRol =
-                                                "rol-admin";
-
-                                    } else if (
-                                            "tecnico".equalsIgnoreCase(
-                                                    rolUsuario)) {
-
-                                        claseRol =
-                                                "rol-tecnico";
-
-                                    } else if (
-                                            "cliente".equalsIgnoreCase(
-                                                    rolUsuario)) {
-
-                                        claseRol =
-                                                "rol-cliente";
+                                    if ("admin".equalsIgnoreCase(rolUsuario)) {
+                                        claseRol = "rol-admin";
+                                    } else if ("tecnico".equalsIgnoreCase(rolUsuario)) {
+                                        claseRol = "rol-tecnico";
+                                    } else if ("cliente".equalsIgnoreCase(rolUsuario)) {
+                                        claseRol = "rol-cliente";
                                     }
                             %>
 
-
                                 <tr class="fila-usuario">
 
-
-                                    <!-- ID -->
-
                                     <td>
-
                                         <span class="id-usuario">
-
                                             #<%= u.getId() %>
-
                                         </span>
-
                                     </td>
 
-
-                                    <!-- USUARIO -->
-
                                     <td>
-
                                         <div class="usuario-celda">
 
                                             <div class="avatar">
-
                                                 <%= inicial %>
-
                                             </div>
 
-
                                             <div class="nombre-usuario">
-
-                                                <strong>
-                                                    <%= nombre %>
-                                                </strong>
-
-                                                <span>
-                                                    @<%= usuario %>
-                                                </span>
-
+                                                <strong><%= nombre %></strong>
+                                                <span>@<%= usuario %></span>
                                             </div>
 
                                         </div>
-
                                     </td>
 
+                                    <td><%= correo %></td>
 
-                                    <!-- CORREO -->
-
-                                    <td>
-
-                                        <%= correo %>
-
-                                    </td>
-
-
-                                    <!-- TELEFONO -->
+                                    <td><%= telefono %></td>
 
                                     <td>
-
-                                        <%= telefono %>
-
-                                    </td>
-
-
-                                    <!-- ROL -->
-
-                                    <td>
-
-                                        <span
-                                            class="rol-badge <%= claseRol %>">
-
+                                        <span class="rol-badge <%= claseRol %>">
                                             <%= rolUsuario %>
-
                                         </span>
-
                                     </td>
 
-
-                                    <!-- ESTADO -->
-
                                     <td>
-
                                         <% if (u.isActivo()) { %>
 
-                                            <span
-                                                class="estado activo">
-
-                                                <span
-                                                    class="estado-punto">
-                                                </span>
-
+                                            <span class="estado activo">
+                                                <span class="estado-punto"></span>
                                                 Activo
-
                                             </span>
 
                                         <% } else { %>
 
-                                            <span
-                                                class="estado inactivo">
-
-                                                <span
-                                                    class="estado-punto">
-                                                </span>
-
+                                            <span class="estado inactivo">
+                                                <span class="estado-punto"></span>
                                                 Inactivo
-
                                             </span>
 
                                         <% } %>
-
                                     </td>
-
-
-                                    <!-- ACCIONES -->
 
                                     <td>
-
                                         <div class="acciones">
 
-
                                             <a
-                                                href="<%= request.getContextPath() %>/admin/usuarios?action=editar&id=<%= u.getId() %>"
+                                                href="<%= request.getContextPath() %>/admin/usuarios?action=editar&amp;id=<%= u.getId() %>"
                                                 class="btn-accion btn-editar"
-                                                title="Editar usuario">
-
+                                                title="Editar usuario"
+                                                aria-label="Editar usuario">
                                                 E
-
                                             </a>
 
-
                                             <a
-                                                href="<%= request.getContextPath() %>/admin/usuarios?action=eliminar&id=<%= u.getId() %>"
+                                                href="<%= request.getContextPath() %>/admin/usuarios?action=eliminar&amp;id=<%= u.getId() %>"
                                                 class="btn-accion btn-eliminar"
                                                 title="Eliminar usuario"
+                                                aria-label="Eliminar usuario"
                                                 onclick="return confirmarEliminacion();">
-
                                                 X
-
                                             </a>
 
-
                                         </div>
-
                                     </td>
 
-
                                 </tr>
-
 
                             <%
                                 }
                             %>
-
 
                             </tbody>
 
@@ -2055,89 +1351,66 @@
 
                     </div>
 
-
                     <div class="tabla-footer">
-
-                        Mostrando
-                        <strong>
-                            <%= totalUsuarios %>
-                        </strong>
-                        usuario(s) registrado(s).
-
-                        &nbsp;
-
                         <span>
-                            <%= activos %>
+                            Mostrando <strong id="totalVisible"><%= totalUsuarios %></strong>
+                            usuario(s) registrado(s).
                         </span>
 
+                        <span class="total-activos">
+                            <strong><%= activos %></strong> usuario(s) activo(s)
+                        </span>
                     </div>
-
 
                 <% } %>
 
-
             </div>
 
-
         </main>
+
+        <footer>
+            ¬© 2026 Rescate M√≥vil | Sistema de gesti√≥n de servicios t√©cnicos
+        </footer>
 
     </section>
 
 </div>
 
-
-<!-- =================================
-     JAVASCRIPT
-     ================================= -->
-
 <script>
-
     function confirmarEliminacion() {
-
         return confirm(
-            "øEst· seguro de eliminar este usuario?"
-            + "\n\nEsta acciÛn no se puede deshacer."
+            "¬øEst√° seguro de eliminar este usuario?"
+            + "\n\nEsta acci√≥n no se puede deshacer."
         );
     }
 
-
     function filtrarUsuarios() {
+        const input = document.getElementById("buscarUsuario");
+        const filtro = input.value.toLowerCase();
+        const filas = document.querySelectorAll(
+            "#tablaUsuarios tbody tr"
+        );
 
-        const input =
-            document.getElementById(
-                "buscarUsuario"
-            );
-
-        const filtro =
-            input.value.toLowerCase();
-
-        const filas =
-            document.querySelectorAll(
-                "#tablaUsuarios tbody tr"
-            );
-
+        let visibles = 0;
 
         filas.forEach(function(fila) {
+            const texto = fila.textContent.toLowerCase();
+            const coincide = texto.includes(filtro);
 
-            const texto =
-                fila.textContent.toLowerCase();
+            fila.style.display = coincide ? "" : "none";
 
-            if (texto.includes(filtro)) {
-
-                fila.style.display = "";
-
-            } else {
-
-                fila.style.display = "none";
+            if (coincide) {
+                visibles++;
             }
-
         });
 
-    }
+        const totalVisible = document.getElementById("totalVisible");
 
+        if (totalVisible) {
+            totalVisible.textContent = visibles;
+        }
+    }
 </script>
 
-
 </body>
-
 </html>

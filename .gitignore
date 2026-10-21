@@ -13,3 +13,12 @@ Thumbs.db
 
 # Configuración local de NetBeans
 nbproject/private/
+
+# Archivos compilados y empaquetados
+*.class
+*.war
+*.jar
+
+# Carpetas generadas de despliegue
+/WEB-INF/classes/
+/WEB-INF/lib/

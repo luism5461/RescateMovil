@@ -1,0 +1,850 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rescate Móvil | Servicio Técnico de Celulares</title>
+
+    <meta name="description"
+          content="Rescate Móvil: servicio técnico profesional para celulares, reparación, mantenimiento y gestión de dispositivos móviles.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #07111f;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::before {
+            background: #00d4ff;
+            opacity: 0.08;
+            top: -150px;
+            left: -150px;
+        }
+
+        body::after {
+            background: #0066ff;
+            opacity: 0.08;
+            bottom: -150px;
+            right: -150px;
+        }
+
+        /* LOGO Y NAVEGACIÓN */
+
+        .navbar {
+            width: 100%;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            background: rgba(7, 17, 31, 0.75);
+            backdrop-filter: blur(12px);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .logo-container img {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #ffffff;
+            padding: 3px;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .logo-text span {
+            color: #00d4ff;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #00d4ff;
+        }
+
+        .btn-login {
+            padding: 11px 22px;
+            border: 1px solid #00d4ff;
+            border-radius: 25px;
+            color: #00d4ff !important;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover {
+            background: #00d4ff;
+            color: #07111f !important;
+        }
+
+        /* PORTADA PRINCIPAL */
+
+        .hero {
+            min-height: 100vh;
+            padding: 130px 8% 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 70px;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 650px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 9px 17px;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            background: rgba(0, 212, 255, 0.08);
+            border-radius: 30px;
+            color: #00d4ff;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            font-size: clamp(45px, 6vw, 78px);
+            line-height: 1.05;
+            margin-bottom: 25px;
+            letter-spacing: -2px;
+        }
+
+        .hero h1 span {
+            color: #00d4ff;
+        }
+
+        .hero-description {
+            color: #aebdce;
+            font-size: 18px;
+            line-height: 1.7;
+            max-width: 600px;
+            margin-bottom: 35px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            display: inline-block;
+            padding: 15px 28px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: #00d4ff;
+            color: #07111f;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.25);
+        }
+
+        .btn-secondary {
+            border: 1px solid #38516d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        /* TELÉFONO */
+
+        .phone-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 300px;
+        }
+
+        .phone {
+            width: 270px;
+            height: 540px;
+            border: 7px solid #1e344d;
+            border-radius: 42px;
+            background: linear-gradient(145deg, #10243a, #07111f);
+            box-shadow:
+                0 0 0 2px #31506f,
+                0 30px 80px rgba(0, 0, 0, 0.5),
+                0 0 70px rgba(0, 212, 255, 0.12);
+            position: relative;
+            padding: 15px;
+        }
+
+        .phone-notch {
+            position: absolute;
+            width: 95px;
+            height: 22px;
+            background: #07111f;
+            border-radius: 0 0 15px 15px;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(0, 212, 255, 0.18),
+                    transparent 35%
+                ),
+                #0b1726;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .phone-screen img {
+            width: 115px;
+            height: 115px;
+            object-fit: contain;
+            border-radius: 22px;
+            background: white;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .phone-screen h2 {
+            font-size: 23px;
+            margin-bottom: 10px;
+        }
+
+        .phone-screen p {
+            color: #91a4b9;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .phone-button {
+            position: absolute;
+            width: 4px;
+            height: 70px;
+            background: #31506f;
+            right: -11px;
+            top: 120px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* SERVICIOS */
+
+        .services {
+            padding: 100px 8%;
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 55px;
+        }
+
+        .section-title small {
+            color: #00d4ff;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .section-title h2 {
+            font-size: 40px;
+            margin-top: 12px;
+        }
+
+        .section-title p {
+            color: #91a4b9;
+            margin-top: 15px;
+            line-height: 1.7;
+        }
+
+        .cards {
+            max-width: 1150px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .card {
+            padding: 32px;
+            background: #0c1a2b;
+            border: 1px solid #1b3047;
+            border-radius: 18px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            border-color: #00d4ff;
+        }
+
+        .card-icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: rgba(0, 212, 255, 0.1);
+            font-size: 27px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            font-size: 21px;
+        }
+
+        .card p {
+            color: #91a4b9;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* NOSOTROS */
+
+        .about {
+            padding: 100px 8%;
+        }
+
+        .about-container {
+            max-width: 1100px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about h2 {
+            font-size: 40px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .about h2 span {
+            color: #00d4ff;
+        }
+
+        .about p {
+            color: #91a4b9;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .feature {
+            padding: 18px;
+            border: 1px solid #1b3047;
+            border-radius: 12px;
+            background: #0c1a2b;
+        }
+
+        .feature strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .feature span {
+            color: #91a4b9;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .about-box {
+            min-height: 350px;
+            background: linear-gradient(
+                145deg,
+                rgba(0, 212, 255, 0.12),
+                rgba(0, 102, 255, 0.04)
+            );
+            border: 1px solid #1b3047;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .about-box-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            background: white;
+            border-radius: 25px;
+            padding: 7px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 35px rgba(0, 212, 255, 0.12);
+        }
+
+        .about-box h3 {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .about-box p {
+            margin: 0;
+        }
+
+        /* CONTACTO */
+
+        .contact {
+            padding: 100px 8%;
+            background: #06101d;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .contact p {
+            color: #91a4b9;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        /* PIE DE PÁGINA */
+
+        footer {
+            padding: 25px 8%;
+            border-top: 1px solid #17283b;
+            background: #050d17;
+            color: #708398;
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        /* ADAPTACIÓN A MÓVILES */
+
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 18px 5%;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 120px 7% 70px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-content {
+                max-width: 750px;
+            }
+
+            .hero-description {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .phone-area {
+                min-width: auto;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .about-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .logo-container img {
+                width: 45px;
+                height: 45px;
+            }
+
+            .hero h1 {
+                font-size: 44px;
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .phone {
+                width: 240px;
+                height: 480px;
+            }
+
+            .section-title h2,
+            .about h2,
+            .contact h2 {
+                font-size: 32px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .about-box {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BARRA DE NAVEGACIÓN -->
+
+    <nav class="navbar">
+
+        <a href="#inicio"
+           class="logo-container"
+           style="text-decoration: none; color: white;"
+           aria-label="Ir al inicio de Rescate Móvil">
+
+            <img
+                src="img/logo.jpg"
+                alt="Logo oficial de Rescate Móvil">
+
+            <div class="logo-text">
+                Rescate <span>Móvil</span>
+            </div>
+
+        </a>
+
+        <div class="nav-links">
+
+            <a href="#inicio">Inicio</a>
+            <a href="#servicios">Servicios</a>
+            <a href="#nosotros">Nosotros</a>
+            <a href="#contacto">Contacto</a>
+
+            <a href="login.jsp" class="btn-login">
+                Iniciar sesión
+            </a>
+
+        </div>
+
+    </nav>
+
+    <!-- PORTADA PRINCIPAL -->
+
+    <main id="inicio">
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="badge">
+                    SERVICIO TÉCNICO PROFESIONAL
+                </div>
+
+                <h1>
+                    Tu celular en buenas
+                    <span>manos.</span>
+                </h1>
+
+                <p class="hero-description">
+                    En Rescate Móvil ofrecemos soluciones profesionales
+                    para reparación, mantenimiento y diagnóstico de
+                    dispositivos móviles. Recuperamos la funcionalidad
+                    de tu equipo de manera rápida y segura.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="#servicios" class="btn-primary">
+                        Ver nuestros servicios →
+                    </a>
+
+                    <a href="login.jsp" class="btn-secondary">
+                        Iniciar sesión
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- TELÉFONO CON EL LOGO -->
+
+            <div class="phone-area">
+
+                <div class="phone">
+
+                    <div class="phone-notch"></div>
+                    <div class="phone-button"></div>
+
+                    <div class="phone-screen">
+
+                        <img
+                            src="img/logo.jpg"
+                            alt="Logo de Rescate Móvil">
+
+                        <h2>Rescate Móvil</h2>
+
+                        <p>
+                            Tecnología, reparación y confianza
+                            para tu dispositivo.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SERVICIOS -->
+
+        <section class="services" id="servicios">
+
+            <div class="section-title">
+
+                <small>Lo que hacemos</small>
+
+                <h2>Nuestros servicios</h2>
+
+                <p>
+                    Soluciones pensadas para mantener
+                    tus dispositivos funcionando correctamente.
+                </p>
+
+            </div>
+
+            <div class="cards">
+
+                <div class="card">
+
+                    <div class="card-icon">🔧</div>
+
+                    <h3>Reparación</h3>
+
+                    <p>
+                        Diagnóstico y reparación de diferentes
+                        tipos de fallas en dispositivos móviles.
+                    </p>
+
+                </div>
+
+                <div class="card">
+
+                    <div class="card-icon">📱</div>
+
+                    <h3>Mantenimiento</h3>
+
+                    <p>
+                        Mantenimiento preventivo y correctivo
+                        para mejorar el funcionamiento de tu equipo.
+                    </p>
+
+                </div>
+
+                <div class="card">
+
+                    <div class="card-icon">🔍</div>
+
+                    <h3>Diagnóstico</h3>
+
+                    <p>
+                        Revisamos tu dispositivo para identificar
+                        problemas y determinar la solución adecuada.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- NOSOTROS -->
+
+        <section class="about" id="nosotros">
+
+            <div class="about-container">
+
+                <div>
+
+                    <h2>
+                        Tecnología al servicio
+                        de <span>tu celular.</span>
+                    </h2>
+
+                    <p>
+                        Rescate Móvil es una plataforma orientada
+                        a la gestión de servicios técnicos para
+                        dispositivos móviles.
+                    </p>
+
+                    <p>
+                        Nuestro objetivo es facilitar la administración
+                        de clientes, técnicos, productos, reparaciones
+                        y ventas desde una plataforma centralizada.
+                    </p>
+
+                    <div class="features">
+
+                        <div class="feature">
+                            <strong>⚡ Atención</strong>
+                            <span>Gestión organizada de servicios.</span>
+                        </div>
+
+                        <div class="feature">
+                            <strong>🛠️ Técnicos</strong>
+                            <span>Administración del personal técnico.</span>
+                        </div>
+
+                        <div class="feature">
+                            <strong>🔐 Seguridad</strong>
+                            <span>Acceso mediante usuarios y roles.</span>
+                        </div>
+
+                        <div class="feature">
+                            <strong>📊 Gestión</strong>
+                            <span>Información organizada y centralizada.</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PRESENTACIÓN DEL LOGO -->
+
+                <div class="about-box">
+
+                    <div>
+
+                        <img
+                            src="img/logo.jpg"
+                            alt="Logo oficial de Rescate Móvil"
+                            class="about-box-logo">
+
+                        <h3>Rescate Móvil</h3>
+
+                        <p>
+                            Una solución tecnológica para
+                            la gestión de servicios móviles.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- CONTACTO -->
+
+        <section class="contact" id="contacto">
+
+            <h2>¿Necesitas ayuda con tu celular?</h2>
+
+            <p>
+                Ingresa a nuestra plataforma para gestionar
+                tus servicios con Rescate Móvil.
+            </p>
+
+            <a href="login.jsp" class="btn-primary">
+                Acceder a la plataforma →
+            </a>
+
+        </section>
+
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+
+    <footer>
+        © 2026 Rescate Móvil |
+        Plataforma de gestión de servicios técnicos móviles
+    </footer>
+
+</body>
+</html>
